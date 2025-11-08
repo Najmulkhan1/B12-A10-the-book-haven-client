@@ -38,7 +38,7 @@ const Navbar = () => {
             </Link>
 
             {/* Desktop Menu */}
-            <nav className="hidden sm:flex items-center gap-8">         
+            <nav className="hidden md:flex items-center gap-8">         
               {navItems.map((item) => (
                 <NavLink
                   key={item.to}
@@ -169,11 +169,11 @@ const Navbar = () => {
               
 
               {/* Mobile Menu Button */}
-              <div className="sm:hidden inline-flex items-center justify-center gap-3">
+              <div className="md:hidden inline-flex items-center justify-center gap-3">
               
                 <button
                   onClick={() => setOpen(!open)}
-                  className="sm:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:bg-gray-100 focus:outline-none"
+                  className="md:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:bg-gray-100 focus:outline-none"
                   aria-label="Toggle menu"
                   aria-expanded={open}
                 >
