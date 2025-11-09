@@ -6,7 +6,7 @@ import logo from "../assets/logo3.svg";
 const Navbar = () => {
   const [open, setOpen] = useState(false);
 
-//   const {user,logOut} = useAuth()
+  //   const {user,logOut} = useAuth()
 
   const navItems = [
     { to: "/", label: "Home" },
@@ -15,15 +15,15 @@ const Navbar = () => {
     { to: "/my-books", label: "My Books" },
   ];
 
-//   const handleLogout = () => {
-//     logOut()
-//     .then(()=> {}
-//   )
-//   .catch((error) => {
-//     console.log(error);
-    
-//   }) 
-//   }
+  //   const handleLogout = () => {
+  //     logOut()
+  //     .then(()=> {}
+  //   )
+  //   .catch((error) => {
+  //     console.log(error);
+
+  //   })
+  //   }
 
   return (
     <div className="w-11/12 mx-auto mt-2">
@@ -38,7 +38,7 @@ const Navbar = () => {
             </Link>
 
             {/* Desktop Menu */}
-            <nav className="hidden md:flex items-center gap-8">         
+            <nav className="hidden md:flex items-center gap-8">
               {navItems.map((item) => (
                 <NavLink
                   key={item.to}
@@ -86,9 +86,7 @@ const Navbar = () => {
               ))}
             </nav>
 
-
             <div className="flex justify-center items-center gap-2">
-
               {/* {user?
               <>
               <div className="dropdown dropdown-end z-50">
@@ -160,17 +158,25 @@ const Navbar = () => {
               : <>
                
               </>} */}
-<div className="inline-flex">
-                <Link to={"/login"} className="btn bg-[#309255] border-none shadow none hover:bg-green-700">Login</Link>
-            </div>
-             <div className="inline-flex">
-                <Link to={"/register"} className="btn bg-transparent border border-[#309255]  hover:bg-[#309255] hover:text-white shadow none">Register</Link>
-            </div>
-              
+              <div className="inline-flex">
+                <Link
+                  to={"/login"}
+                  className="btn bg-amber-700 border-none text-white shadow none hover:bg-amber-800"
+                >
+                  Login
+                </Link>
+              </div>
+              <div className="inline-flex">
+                <Link
+                  to={"/register"}
+                  className="btn bg-transparent border border-amber-700  hover:bg-amber-800 hover:text-white shadow none"
+                >
+                  Register
+                </Link>
+              </div>
 
               {/* Mobile Menu Button */}
               <div className="md:hidden inline-flex items-center justify-center gap-3">
-              
                 <button
                   onClick={() => setOpen(!open)}
                   className="md:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:bg-gray-100 focus:outline-none"

@@ -13,7 +13,7 @@ const Banner = () => {
           hue={0}
           forceHoverState={false}
         >
-          <div className="w-full h-full flex  flex-col md:flex-row items-center justify-between gap-6">
+          <div className="w-full h-full flex md:mt-0 mt-50  flex-col md:flex-row items-center justify-between gap-6">
             <div className="space-y-6 flex-1">
               <BlurText
                 text="Your Next Chapter Awaits"
@@ -39,7 +39,7 @@ const Banner = () => {
               </div>
             </div>
 
-            <div className="flex-shrink-0">
+            <div className="flex-shrink-0 hidden md:block">
               <img
                 className="w-32 md:w-138 select-none pointer-events-auto"
                 src={logo}
@@ -51,7 +51,7 @@ const Banner = () => {
             </div>
             
           </div>
-          <div className="bg-amber-200 w-full h-15 blur absolute"></div>
+          <div className="bg-amber-200 hidden md:block w-full h-15 blur absolute"></div>
         </Orb>
       </div>
     </div>
