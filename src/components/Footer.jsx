@@ -2,6 +2,7 @@ import { Facebook } from "lucide-react";
 import React from "react";
 import { BsInstagram, BsTwitterX } from "react-icons/bs";
 import logo from '../assets/logo3.svg'
+
 import ElegantNewsletter from "./ElegantNewsletter";
 
 const Footer = () => {

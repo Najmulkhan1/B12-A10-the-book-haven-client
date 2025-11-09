@@ -3,6 +3,8 @@ import { BsEye } from "react-icons/bs";
 import { FiEyeOff } from "react-icons/fi";
 import { Link, useLocation, useNavigate } from "react-router";
 import { AuthContext } from "../../context/AuthContext";
+import toast from "react-hot-toast";
+import logo from "/logo.svg";
 // import useAuth from "../../hooks/useAuth";
 
 const Login = () => {
@@ -10,11 +12,11 @@ const Login = () => {
   const [show, setShow] = useState(false);
   const [remember, setRemember] = useState(false);
   const [errors, setErrors] = useState({});
-  const location = useLocation()
+  const location = useLocation();
 
   //   const { userLogin } = useAuth();
-  const { signInUser,googleSignIn } = use(AuthContext);
-  const navigator = useNavigate()
+  const { signInUser, googleSignIn } = use(AuthContext);
+  const navigator = useNavigate();
 
   // simple password strength estimator
   const pwStrength = useMemo(() => {
@@ -33,7 +35,7 @@ const Login = () => {
     "bg-orange-400",
     "bg-yellow-400",
     "bg-emerald-400",
-    "bg-green-600"
+    "bg-green-600",
   ];
   const strengthLabel = ["Very weak", "Weak", "Fair", "Good", "Strong"];
 
@@ -45,37 +47,69 @@ const Login = () => {
     const password = form.password.value;
 
     signInUser(email, password)
-      .then((result) => {
-        console.log(result.user);
-        navigator(location.state || "/")
+      .then(() => {
+        toast.success("Successfully Logged!");
+
+        navigator(location.state || "/");
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.error("Invalid-credential");
+      });
+  };
+
+  const handleGoogleSignIn = () => {
+    googleSignIn()
+      .then(() => {
+        // console.log(result.user);
+        toast.success("Successfully Logged!");
+        navigator(location.state || "/");
       })
       .catch((error) => {
         console.log(error);
       });
   };
 
-  const handleGoogleSignIn = () => {
-    googleSignIn()
-    .then((result) => {
-        console.log(result.user);
-        navigator(location.state || "/")
-        
-    })
-    .catch((error) => {
-        console.log(error);
-        
-    })
-  }
-
   return (
     <div>
-      <div className=" flex items-stretch bg-gradient-to-br from-emerald-50 via-white to-emerald-100 rounded-sm">
+      <div className=" flex items-stretch  rounded-sm">
         {/* Left illustration / brand panel (hidden on small screens) */}
-    
+        <svg
+            className="absolute -right-114 top-120 w-[650px] h-[650px] opacity-25 blur-xl transition-all duration-500"
+            viewBox="0 0 600 600"
+            aria-hidden
+          >
+            <defs>
+              <linearGradient id="gA" x1="0" x2="1">
+                <stop offset="0%" stopColor="#bbf7d0" />
+                <stop offset="100%" stopColor="#d1fae5" />
+              </linearGradient>
+            </defs>
+            <path
+              fill="url(#gA)"
+              d="M421,325Q371,400,306,435Q241,470,176,428Q111,386,74,330Q37,274,83,217Q129,160,204,124Q279,88,335,130Q391,172,429,238Q467,304,421,325Z"
+            />
+          </svg>
         <aside className="hidden lg:flex lg:w-1/2 items-center justify-center relative overflow-hidden">
           {/* large animated blob */}
           <svg
-            className="absolute -left-32 -top-28 w-[650px] h-[650px] opacity-25"
+            className="absolute -left-32 -top-28 w-[650px] h-[650px] opacity-25 blur-xl transition-all duration-500 "
+            viewBox="0 0 600 600"
+            aria-hidden
+          >
+            <defs>
+              <linearGradient id="gA" x1="0" x2="1">
+                <stop offset="0%" stopColor="#bbf7d0" />
+                <stop offset="100%" stopColor="#d1fae5" />
+              </linearGradient>
+            </defs>
+            <path
+              fill="url(#gA)"
+              d="M421,325Q371,400,306,435Q241,470,176,428Q111,386,74,330Q37,274,83,217Q129,160,204,124Q279,88,335,130Q391,172,429,238Q467,304,421,325Z"
+            />
+          </svg>
+          <svg
+            className="absolute -right-32 -button-28 w-[650px] h-[650px] opacity-25 blur-xl transition-all duration-500"
             viewBox="0 0 600 600"
             aria-hidden
           >
@@ -108,12 +142,13 @@ const Login = () => {
           </svg>
 
           {/* Illustration card */}
-          <div className="relative max-w-md p-10 rounded-3xl shadow-2xl bg-white/60 backdrop-blur-sm border border-white/40">
+          <div className="relative max-w-md p-10 rounded-3xl shadow-2xl bg-[#fffbeb]/60 backdrop-blur-sm border border-white/40">
             <h2 className=" text-center text-3xl font-extrabold text-gray-900 mb-4">
               Welcome back to The Book Haven
             </h2>
             <p className="text-gray-700 mb-6">
-              Your books. Your knowledge. Log in to continue your reading journey.
+              Your books. Your knowledge. Log in to continue your reading
+              journey.
             </p>
 
             {/* small highlights */}
@@ -123,8 +158,12 @@ const Login = () => {
                   24k
                 </div>
                 <div>
-                  <div className="text-sm text-gray-600 font-semibold">Readers</div>
-                  <div className="text-xs text-gray-500">A trusted book-loving community</div>
+                  <div className="text-sm text-gray-600 font-semibold">
+                    Readers
+                  </div>
+                  <div className="text-xs text-gray-500">
+                    A trusted book-loving community
+                  </div>
                 </div>
               </div>
 
@@ -133,7 +172,9 @@ const Login = () => {
                   1.2k
                 </div>
                 <div>
-                  <div className="text-sm text-gray-600 font-semibold">Collections</div>
+                  <div className="text-sm text-gray-600 font-semibold">
+                    Collections
+                  </div>
                   <div className="text-xs text-gray-500">
                     Curated and practical reading experiences
                   </div>
@@ -147,17 +188,17 @@ const Login = () => {
         <main className="flex-1 flex items-center justify-center p-6 lg:p-12">
           <div className="w-full max-w-xl">
             {/* Floating glass card */}
-            <div className="relative bg-white/70 backdrop-blur-sm border border-white/40 rounded-3xl p-8 md:p-10 shadow-xl overflow-visible">
+            <div className="relative bg-[#fffbeb]/70 backdrop-blur-sm border border-white/40 rounded-3xl p-8 md:p-10 shadow-xl overflow-visible">
               {/* top-brand / small nav */}
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-bold">
-                    E
+                  <div className="h-10 w-10 ">
+                    <img src={logo} alt="" />
                   </div>
                   <div>
                     <div className="text-sm text-gray-500">Welcome back to</div>
                     <div className="font-semibold text-slate-900">
-                      EduLe Dashboard
+                      The Book Haven
                     </div>
                   </div>
                 </div>
@@ -182,7 +223,10 @@ const Login = () => {
               </h1>
 
               <div className=" mb-5">
-                <button onClick={()=>handleGoogleSignIn()} className="btn bg-white w-full shadow-none hover:border-green-500  text-black border-[#e5e5e5]">
+                <button
+                  onClick={() => handleGoogleSignIn()}
+                  className="btn bg-white w-full shadow-none hover:border-green-500  text-black border-[#e5e5e5]"
+                >
                   <svg
                     aria-label="Google logo"
                     width="16"
@@ -286,13 +330,13 @@ const Login = () => {
                       type="checkbox"
                       checked={remember}
                       onChange={() => setRemember((r) => !r)}
-                      className="w-4 h-4 rounded border-gray-300"
+                      className="w-4 h-4 rounded shadow checkbox text-black "
                     />
                     Remember me
                   </label>
 
                   <Link
-                    to="/forgot"
+                    to="#"
                     className="text-sm text-emerald-600 hover:underline"
                   >
                     Forgot password?
@@ -301,9 +345,9 @@ const Login = () => {
 
                 <button
                   type="submit"
-                  className="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold transition-shadow shadow"
+                  className="w-full py-3 rounded-xl cursor-pointer bg-amber-700 hover:bg-amber-800 text-white font-semibold transition-shadow shadow"
                 >
-                  Sign in
+                  Login
                 </button>
 
                 <p className="text-center text-sm text-gray-500 mt-4">
@@ -337,8 +381,6 @@ const Login = () => {
             Create an account
           </Link>
         </div>
-
-        
       </div>
     </div>
   );
