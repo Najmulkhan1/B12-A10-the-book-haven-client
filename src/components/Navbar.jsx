@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { Link, NavLink } from "react-router";
 import logo from "../assets/logo3.svg";
-// import useAuth from "../hooks/useAuth";
+import useAuth from "../hooks/useAuth";
+import { Tooltip } from "react-tooltip";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
 
-  //   const {user,logOut} = useAuth()
+    const {user,logOut} = useAuth()
 
   const navItems = [
     { to: "/", label: "Home" },
@@ -15,15 +16,15 @@ const Navbar = () => {
     { to: "/my-books", label: "My Books" },
   ];
 
-  //   const handleLogout = () => {
-  //     logOut()
-  //     .then(()=> {}
-  //   )
-  //   .catch((error) => {
-  //     console.log(error);
+    const handleLogout = () => {
+      logOut()
+      .then(()=> {}
+    )
+    .catch((error) => {
+      console.log(error);
 
-  //   })
-  //   }
+    })
+    }
 
   return (
     <div className="w-11/12 mx-auto mt-2">
@@ -87,7 +88,7 @@ const Navbar = () => {
             </nav>
 
             <div className="flex justify-center items-center gap-2">
-              {/* {user?
+              {user?
               <>
               <div className="dropdown dropdown-end z-50">
             <div
@@ -95,70 +96,30 @@ const Navbar = () => {
               role="button"
               className="btn btn-ghost btn-circle avatar"
             >
-              <div className="w-9 border-2 border-gray-300 rounded-full">
+              <div id="clickable" className="w-9 border-2 border-gray-300 rounded-full">
                 <img
                   alt="Tailwind CSS Navbar component"
                   referrerPolicy="no-referrer"
                   src={user.photoURL ||  "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"}
                 />
+                <Tooltip anchorSelect="#clickable" clickable>
+                    <h3>{user?.displayName}</h3>
+                    <button onClick={handleLogout} className="bg-amber-600 py-1 px-2 rounded-sm mt-3 cursor-pointer">LogOut</button>
+                </Tooltip>
               </div>
-            </div>
-            <ul
-              tabIndex="-1"
-              className="menu  menu-sm dropdown-content bg-base-100 rounded-box z-50 mt-3 w-52 p-2 shadow"
-            >
-              <div className=" pb-3 border-b border-b-gray-200">
+
+
+              {/* <div className=" pb-3 border-b border-b-gray-200">
                 <li className="text-sm font-bold">{user.displayName}</li>
                 <li className="text-xs">{user.email}</li>
-              </div>
-              <li className="mt-3">
-                <Link to={"/profile"}>
-                  <FaUser />
-                  
-                   Profile
-                </Link>
-              </li>
-
-              <li>
-                <Link to={"/my-models"}>
-                  My Models
-                </Link>
-              </li>
-
-              <li >
-                <Link to={"/my-downloads"}>
-                 My Downloads
-                </Link>
-              </li>
-
-              <input
-           onChange={(e)=> handleTheme(e.target.checked)}
-           type="checkbox"
-           defaultChecked={localStorage.getItem('theme') === "dark"}
-           className="toggle"/>
+              </div> */}
+             
               
-              <li>
-                <a>
-                  {" "}
-                  <FaGear /> Settings
-                </a>
-              </li>
-              <li>
-                <button
-                  onClick={handleLogout}
-                  className="btn btn-xs text-left bg-linear-to-r from-pink-500 to-red-500 text-white"
-                >
-                  Logout
-                  <IoLogOut /> Logout
-                </button>
-              </li>
-            </ul>
+            </div>
           </div>
               </>
               : <>
-               
-              </>} */}
-              <div className="inline-flex">
+                <div className="inline-flex">
                 <Link
                   to={"/login"}
                   className="btn bg-amber-700 border-none text-white shadow none hover:bg-amber-800"
@@ -174,6 +135,8 @@ const Navbar = () => {
                   Register
                 </Link>
               </div>
+              </>}
+             
 
               {/* Mobile Menu Button */}
               <div className="md:hidden inline-flex items-center justify-center gap-3">
