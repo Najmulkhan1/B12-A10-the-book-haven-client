@@ -1,13 +1,29 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, NavLink } from "react-router";
 import logo from "../assets/logo3.svg";
 import useAuth from "../hooks/useAuth";
 import { Tooltip } from "react-tooltip";
+import Switch from "./Switch";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
 
-    const {user,logOut} = useAuth()
+  const { user, logOut } = useAuth();
+  //   const [isMobile, setIsMobile] = useState(false);
+  //   const [showTooltip, setShowTooltip] = useState(false);
+
+  //   useEffect(() => {
+  //     const checkMobile = () => setIsMobile(window.innerWidth <= 768);
+  //     checkMobile();
+  //     window.addEventListener("resize", checkMobile);
+  //     return () => window.removeEventListener("resize", checkMobile);
+  //   }, []);
+
+  //   const handleTooltipClick = () => {
+  //     if (isMobile) {
+  //       setShowTooltip(!showTooltip);
+  //     }
+  //   };
 
   const navItems = [
     { to: "/", label: "Home" },
@@ -16,15 +32,13 @@ const Navbar = () => {
     { to: "/my-books", label: "My Books" },
   ];
 
-    const handleLogout = () => {
-      logOut()
-      .then(()=> {}
-    )
-    .catch((error) => {
-      console.log(error);
-
-    })
-    }
+  const handleLogout = () => {
+    logOut()
+      .then(() => {})
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   return (
     <div className="w-11/12 mx-auto mt-2">
@@ -88,55 +102,97 @@ const Navbar = () => {
             </nav>
 
             <div className="flex justify-center items-center gap-2">
-              {user?
-              <>
-              <div className="dropdown dropdown-end z-50">
-            <div
-              tabIndex={0}
-              role="button"
-              className="btn btn-ghost btn-circle avatar"
-            >
-              <div id="clickable" className="w-9 border-2 border-gray-300 rounded-full">
-                <img
-                  alt="Tailwind CSS Navbar component"
-                  referrerPolicy="no-referrer"
-                  src={user.photoURL ||  "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"}
-                />
-                <Tooltip anchorSelect="#clickable" clickable>
-                    <h3>{user?.displayName}</h3>
-                    <button onClick={handleLogout} className="bg-amber-600 py-1 px-2 rounded-sm mt-3 cursor-pointer">LogOut</button>
-                </Tooltip>
-              </div>
+                
+                <Switch></Switch>
 
+              {user ? (
+                <>
+                  <div className="dropdown dropdown-end z-50">
+                    <div
+                      tabIndex={0}
+                      role="button"
+                      className="btn btn-ghost btn-circle avatar"
+                    >
+                      <div
+                        id="clickable"
+                        className="w-9 border-2 border-gray-300 rounded-full"
+                      >
+                        <img
+                          alt="Tailwind CSS Navbar component"
+                          referrerPolicy="no-referrer"
+                          src={
+                            user.photoURL ||
+                            "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                          }
+                        />
+                        <Tooltip
+                          anchorSelect="#clickable"
+                          clickable
+                          className="hidden md:block"
+                        >
+                          <h3>{user?.displayName}</h3>
+                          <button
+                            onClick={handleLogout}
+                            className="bg-amber-600  py-1 px-2 rounded-sm mt-3 cursor-pointer"
+                          >
+                            LogOut
+                          </button>
+                        </Tooltip>
+                      </div>
 
-              {/* <div className=" pb-3 border-b border-b-gray-200">
+                      {/* <div className=" pb-3 border-b border-b-gray-200">
                 <li className="text-sm font-bold">{user.displayName}</li>
                 <li className="text-xs">{user.email}</li>
               </div> */}
-             
-              
-            </div>
-          </div>
-              </>
-              : <>
-                <div className="inline-flex">
-                <Link
-                  to={"/login"}
-                  className="btn bg-amber-700 border-none text-white shadow none hover:bg-amber-800"
-                >
-                  Login
-                </Link>
-              </div>
-              <div className="inline-flex">
-                <Link
-                  to={"/register"}
-                  className="btn bg-transparent border border-amber-700  hover:bg-amber-800 hover:text-white shadow none"
-                >
-                  Register
-                </Link>
-              </div>
-              </>}
-             
+                    </div>
+
+                    <ul
+                      tabIndex="-1"
+                      className="menu md:hidden  menu-sm dropdown-content bg-base-100 rounded-box z-50 mt-3 w-52 p-2 shadow"
+                    >
+                      <div className=" pb-3 border-b border-b-gray-200">
+                        <li className="text-sm font-bold">
+                          {user.displayName}
+                        </li>
+                        <li className="text-xs">{user.email}</li>
+
+                        <li className="pt-3">
+                          <button
+                            type="button"
+                            // Use onClickCapture to ensure it fires before menu closes
+                            onClickCapture={(e) => {
+                              e.stopPropagation();
+                              handleLogout();
+                            }}
+                            className="btn bg-amber-600 py-1 px-2 rounded-sm cursor-pointer w-full text-white"
+                          >
+                            LogOut
+                          </button>
+                        </li>
+                      </div>
+                    </ul>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="inline-flex">
+                    <Link
+                      to={"/login"}
+                      className="btn bg-amber-700 border-none text-white shadow none hover:bg-amber-800"
+                    >
+                      Login
+                    </Link>
+                  </div>
+                  <div className="inline-flex">
+                    <Link
+                      to={"/register"}
+                      className="btn bg-transparent border border-amber-700  hover:bg-amber-800 hover:text-white shadow none"
+                    >
+                      Register
+                    </Link>
+                  </div>
+                </>
+              )}
 
               {/* Mobile Menu Button */}
               <div className="md:hidden inline-flex items-center justify-center gap-3">

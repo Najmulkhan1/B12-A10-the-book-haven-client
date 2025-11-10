@@ -30,7 +30,7 @@ const LatestBooks = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {books.map((book) => (
               <motion.article
-                key={book.id}
+                key={book._id}
                 initial={{ opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.45 }}
