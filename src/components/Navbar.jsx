@@ -102,9 +102,8 @@ const Navbar = () => {
             </nav>
 
             <div className="flex justify-center items-center gap-2">
-                
-                <Switch></Switch>
 
+                <Switch></Switch>
               {user ? (
                 <>
                   <div className="dropdown dropdown-end z-50">

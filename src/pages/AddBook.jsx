@@ -2,10 +2,57 @@ import React from "react";
 import BackButton from "../components/BackButton";
 import { Link } from "react-router";
 import useAuth from "../hooks/useAuth";
+import useAxios from "../hooks/useAxios";
 
 const AddBook = () => {
+  const { user } = useAuth();
 
-    const {user} = useAuth()
+  const axiosInstance = useAxios()
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const form = e.target;
+    const title = form.title.value;
+    const author = form.author.value;
+    const authorImg = form.authorImg.value;
+    const category = form.category.value;
+    const rating = form.rating.value;
+    const summary = form.summary.value;
+    const bookImage = form.bookImage.value;
+    const userEmail = form.email.value;
+    const userName = form.name.value;
+    console.log(
+      title,
+      author,
+      authorImg,
+      category,
+      rating,
+      summary,
+      bookImage,
+      userEmail,
+      userName
+    );
+
+    const newBook = {
+        title: title,
+        author: author,
+        authorImg: authorImg,
+        category: category,
+        rating: parseFloat(rating),
+        summary: summary,
+        bookImage: bookImage,
+        userEmail: userEmail,
+        userName: userName,
+        created_at: new Date()
+    }
+
+    axiosInstance.post('books',newBook)
+    .then((data)=> {
+        console.log(data.data);
+    })
+
+  };
 
   return (
     <div className="w-11/12 mx-auto min-h-120">
@@ -25,7 +72,7 @@ const AddBook = () => {
             </div>
           </div>
 
-          <form className="space-y-3">
+          <form onSubmit={handleSubmit} className="space-y-3">
             <div className="grid grid-cols-2 gap-4">
               {/* title field */}
               <div>
@@ -34,6 +81,7 @@ const AddBook = () => {
                   type="text"
                   className="input w-full rounded-lg focus:border-0 focus:outline-gray-200"
                   name="title"
+                  required
                 />
               </div>
 
@@ -44,6 +92,7 @@ const AddBook = () => {
                   type="text"
                   className="input w-full rounded-lg focus:border-0 focus:outline-gray-200"
                   name="author"
+                  required
                 />
               </div>
             </div>
@@ -68,12 +117,12 @@ const AddBook = () => {
                 <select
                   name="category"
                   className="select w-full rounded-lg focus:border-0 focus:outline-gray-200"
+                  defaultValue='1'
                   required
                 >
-                  <option value="" selected disabled>
-                Select Genre
+                  <option value="1" disabled>
+                    -- Select Genre --
                   </option>
-
                   <option value="Classic Fiction">Classic Fiction</option>
                   <option value="Historical Fiction">Historical Fiction</option>
                   <option value="Fantasy">Fantasy</option>
@@ -106,66 +155,70 @@ const AddBook = () => {
               </div>
 
               {/* rating */}
-              <div >
+              <div>
                 <label htmlFor="">Rating</label>
-              <input type="number" className="input w-full rounded-lg focus:border-0 focus:outline-gray-200" name="" id="" />
+                <input
+                  type="number"
+                  className="input w-full rounded-lg focus:border-0 focus:outline-gray-200"
+                  name="rating"
+                  id=""
+                />
               </div>
             </div>
 
             {/* summary */}
             <div>
-            <label className="label font-medium">Summary</label>
-            <textarea
-              name="description"
-              required
-              rows="3"
-             className="textarea w-full rounded-2xl focus:border-0 focus:outline-gray-200 h-[250px]"
-              placeholder="Enter description"
-            ></textarea>
-          </div>
+              <label className="label font-medium">Summary</label>
+              <textarea
+                name="summary"
+                required
+                rows="3"
+                className="textarea w-full rounded-2xl focus:border-0 focus:outline-gray-200 h-[250px]"
+                placeholder="Enter summary"
+              ></textarea>
+            </div>
 
-          {/* cover image */}
+            {/* cover image */}
             <div>
-              <label className="label font-medium">
-                Book Cover Image
-              </label>
+              <label className="label font-medium">Book Cover Image</label>
               <input
                 type="url"
                 className="input w-full rounded-lg focus:border-0 focus:outline-gray-200"
-                name="authorImg"
+                name="bookImage"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-                {/* user Email*/}
-            <div>
-              <label className="label font-medium">
-                User Email
-              </label>
-              <input
-                type="email;"
-                className="input w-full rounded-lg focus:border-0 focus:outline-gray-200"
-                name="email"
-                defaultValue={user?.email}
-                readOnly
-              />
-            </div>
-          {/* user name */}
-            <div>
-              <label className="label font-medium">
-                User Name
-              </label>
-              <input
-                type="text"
-                className="input w-full rounded-lg focus:border-0 focus:outline-gray-200"
-                name="name"
-                defaultValue={user?.displayName}
-                readOnly
-              />
-            </div>
+              {/* user Email*/}
+              <div>
+                <label className="label font-medium">User Email</label>
+                <input
+                  type="email;"
+                  className="input w-full rounded-lg focus:border-0 focus:outline-gray-200"
+                  name="email"
+                  defaultValue={user?.email}
+                  readOnly
+                />
+              </div>
+              {/* user name */}
+              <div>
+                <label className="label font-medium">User Name</label>
+                <input
+                  type="text"
+                  className="input w-full rounded-lg focus:border-0 focus:outline-gray-200"
+                  name="name"
+                  defaultValue={user?.displayName}
+                  readOnly
+                />
+              </div>
             </div>
 
-          <button type="submit" className="btn w-full bg-amber-700 hover:bg-amber-800 border-none text-white">Add Book</button>
+            <button
+              type="submit"
+              className="btn w-full bg-amber-700 hover:bg-amber-800 border-none text-white"
+            >
+              Add Book
+            </button>
           </form>
         </div>
       </div>

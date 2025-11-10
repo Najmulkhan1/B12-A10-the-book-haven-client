@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import useAuth from "../hooks/useAuth";
 import useAxios from "../hooks/useAxios";
 import { motion } from "framer-motion";
+import { Link } from "react-router";
 
 const LatestBooks = () => {
   const { user } = useAuth();
@@ -10,7 +11,8 @@ const LatestBooks = () => {
   const axiosInstance = useAxios();
 
   useEffect(() => {
-    axiosInstance.get("/latest-books").then((data) => {
+    axiosInstance.get("/latest-books")
+    .then((data) => {
       setBooks(data.data);
       console.log(data);
     });
@@ -40,9 +42,9 @@ const LatestBooks = () => {
                 aria-label={`Open ${book.title} by ${book.author}`}
               >
                 <div className="w-20 h-28 flex-shrink-0 overflow-hidden rounded-md bg-gray-200 flex items-center justify-center">
-                  {book.coverUrl ? (
+                  {book.bookImage ? (
                     <img
-                      src={book.coverUrl}
+                      src={book.bookImage}
                       alt={`Cover of ${book.title}`}
                       className="w-full h-full object-cover"
                     />
@@ -67,6 +69,7 @@ const LatestBooks = () => {
                       New
                     </span>
                   </div>
+                  <Link to={`/books-details/${book._id}`} className="btn bg-amber-700 border-none">View details</Link>
                 </div>
               </motion.article>
 
