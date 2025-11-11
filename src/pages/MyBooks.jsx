@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import useAxios from "../hooks/useAxios";
 import useAuth from "../hooks/useAuth";
 import Stars from "../components/Stars";
@@ -7,57 +7,69 @@ import { FaRegEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import Swal from "sweetalert2";
 
+
 const MyBooks = () => {
- const { user } = useAuth();
-const axiosInstance = useAxios();
-const [books, setBooks] = useState([]);
+  const { user } = useAuth();
+  const axiosInstance = useAxios();
+  const [books, setBooks] = useState([]);
+  const editBookRef = useRef();
 
+  useEffect(() => {
+    if (!user?.email) return;
+    axiosInstance
+      .get(`/my-books?email=${encodeURIComponent(user.email)}`)
+      .then((res) => {
+        setBooks(res.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, [axiosInstance, user?.email]);
 
-useEffect(() => {
-  if (!user?.email) return;
-  axiosInstance
-    .get(`/my-books?email=${encodeURIComponent(user.email)}`)
-    .then((res) => {
-      setBooks(res.data || []);
-    })
-    .catch((err) => {
-      console.error(err);
+  const handleDelete = (id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (!result.isConfirmed) return;
+      try {
+        const res = await axiosInstance.delete(`/books/${id}`);
+        console.log(res.data);
+
+        setBooks((prev) => prev.filter((b) => b._id !== id));
+
+        Swal.fire({
+          title: "Deleted!",
+          text: "Your file has been deleted.",
+          icon: "success",
+        });
+      } catch (error) {
+        console.error(error);
+        Swal.fire({
+          title: "Error",
+          text: "Could not delete the book. Try again.",
+          icon: "error",
+        });
+      }
     });
-}, [axiosInstance, user?.email]);
+  };
 
-const handleDelete = (id) => {
-  Swal.fire({
-    title: "Are you sure?",
-    text: "You won't be able to revert this!",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#3085d6",
-    cancelButtonColor: "#d33",
-    confirmButtonText: "Yes, delete it!",
-  }).then(async (result) => {
-    if (!result.isConfirmed) return;
-    try {
-      const res = await axiosInstance.delete(`/books/${id}`);
-      console.log(res.data);
+  const handleEdit = (id) => {
+    editBookRef.current.showModal();
+    console.log(id);
+  };
 
-      setBooks((prev) => prev.filter((b) => b._id !== id));
+  const handleFormSubmit = (e,id) => {
+    e.preventdefault()
 
-      Swal.fire({
-        title: "Deleted!",
-        text: "Your file has been deleted.",
-        icon: "success",
-      });
-    } catch (error) {
-      console.error(error);
-      Swal.fire({
-        title: "Error",
-        text: "Could not delete the book. Try again.",
-        icon: "error",
-      });
-    }
-  });
-};
-
+    console.log(id);
+    
+  }
 
   return (
     <div>
@@ -143,23 +155,196 @@ const handleDelete = (id) => {
                     <Stars value={book.rating} />
                   </td>
 
-                  <td className="px-4 py-4 text-right">
+                  {/* action buttons */}
+                  <td className="px-4 py-4">
                     <div className="flex gap-3 justify-end">
-                        <button onClick={()=>handleDelete(book._id)} className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border bg-white hover:bg-gray-50 text-sm">
-                      <MdDelete />
-                    </button>
-                    <button className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border bg-white hover:bg-gray-50 text-sm">
-                      <FaRegEdit />
-                    </button>
-                    <Link
-                      to={`/books-details/${book._id}`}
-                      className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border bg-white hover:bg-gray-50 text-sm"
-                      aria-label={`View details for ${book.title}`}
-                    >
-                      View
-                    </Link>
+                      <button
+                        onClick={() => handleDelete(book._id)}
+                        className="inline-flex items-center cursor-pointer gap-2 px-3 py-2 rounded-lg border bg-white hover:bg-gray-50 text-sm"
+                      >
+                        <MdDelete />
+                      </button>
+
+                      <button
+                        onClick={() =>{handleEdit(book._id)}}
+                        className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border bg-white hover:bg-gray-50 text-sm"
+                      >
+                        <FaRegEdit />
+                      </button>
+
+                      <dialog
+                        ref={editBookRef}
+                        className="modal modal-bottom sm:modal-middle"
+                      >
+                        <div className="modal-box">
+                         <form onSubmit={() => handleFormSubmit(book._id)} className="space-y-3">
+            <div className="grid grid-cols-2 gap-4">
+              {/* title field */}
+              <div>
+                <label className="block">Title</label>
+                <input
+                  type="text"
+                  className="input w-full rounded-lg focus:border-0 focus:outline-gray-200"
+                  name="title"
+                  required
+                />
+              </div>
+
+              {/* author Field */}
+              <div>
+                <label className="block">Author</label>
+                <input
+                  type="text"
+                  className="input w-full rounded-lg focus:border-0 focus:outline-gray-200"
+                  name="author"
+                  required
+                />
+              </div>
+            </div>
+
+            {/* author image */}
+            <div>
+              <label className="block">
+                Author Image Url{" "}
+                <span className="text-gray-500">(optional)</span>
+              </label>
+              <input
+                type="url"
+                className="input w-full rounded-lg focus:border-0 focus:outline-gray-200"
+                name="authorImg"
+              />
+            </div>
+
+            {/* genre category */}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block">Genre</label>
+                <select
+                  name="category"
+                  className="select w-full rounded-lg focus:border-0 focus:outline-gray-200"
+                  defaultValue='1'
+                  required
+                >
+                  <option value="1" disabled>
+                    -- Select Genre --
+                  </option>
+                  <option value="Classic Fiction">Classic Fiction</option>
+                  <option value="Historical Fiction">Historical Fiction</option>
+                  <option value="Fantasy">Fantasy</option>
+                  <option value="Science Fiction">Science Fiction</option>
+                  <option value="Mystery">Mystery</option>
+                  <option value="Thriller">Thriller</option>
+                  <option value="Romance">Romance</option>
+                  <option value="Adventure">Adventure</option>
+                  <option value="Non-Fiction">Non-Fiction</option>
+                  <option value="Philosophical Fiction">
+                    Philosophical Fiction
+                  </option>
+                  <option value="Psychological Fiction">
+                    Psychological Fiction
+                  </option>
+                  <option value="Gothic Fiction">Gothic Fiction</option>
+                  <option value="Gothic Romance">Gothic Romance</option>
+                  <option value="Magical Realism">Magical Realism</option>
+                  <option value="Epic Poetry">Epic Poetry</option>
+                  <option value="Classic Epic">Classic Epic</option>
+                  <option value="Tech Thriller">Tech Thriller</option>
+                  <option value="Drama">Drama</option>
+                  <option value="Coming-of-Age Fiction">
+                    Coming-of-Age Fiction
+                  </option>
+                  <option value="Southern Gothic">Southern Gothic</option>
+                  <option value="Modernist Fiction">Modernist Fiction</option>
+                  <option value="Dystopian Fiction">Dystopian Fiction</option>
+                </select>
+              </div>
+
+              {/* rating */}
+              <div>
+                <label htmlFor="">Rating</label>
+                <input
+                  type="number"
+                  className="input w-full rounded-lg focus:border-0 focus:outline-gray-200"
+                  name="rating"
+                  min='1'
+                  max='5'
+                  required
+                />
+              </div>
+            </div>
+
+            {/* summary */}
+            <div>
+              <label className="label font-medium">Summary</label>
+              <textarea
+                name="summary"
+                required
+                rows="3"
+                className="textarea w-full rounded-2xl focus:border-0 focus:outline-gray-200 h-[250px]"
+                placeholder="Enter summary"
+                defaultValue={book.summary}
+              ></textarea>
+            </div>
+
+            {/* cover image */}
+            <div>
+              <label className="label font-medium">Book Cover Image</label>
+              <input
+                type="url"
+                className="input w-full rounded-lg focus:border-0 focus:outline-gray-200"
+                name="bookImage"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              {/* user Email*/}
+              <div>
+                <label className="label font-medium">User Email</label>
+                <input
+                  type="email;"
+                  className="input w-full rounded-lg focus:border-0 focus:outline-gray-200"
+                  name="email"
+                  defaultValue={user?.email}
+                  readOnly
+                />
+              </div>
+              {/* user name */}
+              <div>
+                <label className="label font-medium">User Name</label>
+                <input
+                  type="text"
+                  className="input w-full rounded-lg focus:border-0 focus:outline-gray-200"
+                  name="name"
+                  defaultValue={user?.displayName}
+                  readOnly
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              className="btn w-full bg-amber-700 hover:bg-amber-800 border-none text-white"
+            >
+              Add Book
+            </button>
+          </form>
+                          <div className="modal-action">
+                            <form method="dialog">
+                              {/* if there is a button in form, it will close the modal */}
+                              <button className="btn">Close</button>
+                            </form>
+                          </div>
+                        </div>
+                      </dialog>
+
+                      <Link
+                        to={`/books-details/${book._id}`}
+                        className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border bg-white hover:bg-gray-50 text-sm"
+                        aria-label={`View details for ${book.title}`}
+                      >
+                        View
+                      </Link>
                     </div>
-                    
                   </td>
                 </tr>
               ))}
