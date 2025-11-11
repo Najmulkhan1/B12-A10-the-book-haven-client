@@ -5,12 +5,12 @@ import { Link, useLocation, useNavigate } from "react-router";
 import { AuthContext } from "../../context/AuthContext";
 import useAuth from "../../hooks/useAuth";
 import logo from "/logo.svg";
+import toast from "react-hot-toast";
 
 const Register = () => {
   const [pw, setPw] = useState("");
   const [show, setShow] = useState(false);
   const [remember, setRemember] = useState(false);
-  const [errors, setErrors] = useState({});
 
   const { createUser, googleSignIn, updateUser, setUser } = useAuth();
   const location = useLocation();
@@ -27,6 +27,9 @@ const Register = () => {
     return score; // 0..4
   }, [pw]);
 
+
+  const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z]).{6,}$/;
+
   // color for strength bar
   const strengthColor = [
     "bg-red-400",
@@ -41,10 +44,12 @@ const Register = () => {
     googleSignIn()
       .then((result) => {
         console.log(result.user);
+        toast.success("Successfully Logged!");
         navigator(location.state || "/");
       })
       .catch((error) => {
         console.log(error);
+        toast.error("Invalid-credential");
       });
   };
 
@@ -56,7 +61,15 @@ const Register = () => {
     const email = form.email.value;
     const password = form.password.value;
 
-    console.log(name, url, email, password);
+    
+    if (!passwordRegex.test(password)) {
+      toast.error(
+        "Password must have at least one uppercase, one lowercase letter, and be 6+ characters long."
+      );
+      return;
+    } else {
+      toast.success("✅ Password is valid!");
+    }
 
     createUser(email, password).then((result) => {
       const user = result.user;
@@ -71,9 +84,10 @@ const Register = () => {
           console.log(error);
         });
     });
-
+    toast.success("Successfully Logged!");
     navigator(location.state || "/").catch((error) => {
       console.log(error);
+      toast.error("Invalid-credential");
     });
   };
 
@@ -84,46 +98,12 @@ const Register = () => {
 
   return (
     <div>
-      <div className="min-h-screen flex items-stretch bg-gradient-to-br from-emerald-50 via-white to-emerald-100 rounded-sm">
+      <div className="min-h-screen flex items-stretch rounded-sm">
         {/* Left illustration / brand panel (hidden on small screens) */}
-        
+
         <aside className="hidden lg:flex lg:w-1/2 items-center justify-center relative overflow-hidden">
-          {/* large animated blob */}
-          <svg
-            className="absolute -left-32 -top-28 w-[650px] h-[650px] opacity-25"
-            viewBox="0 0 600 600"
-            aria-hidden
-          >
-            <defs>
-              <linearGradient id="gA" x1="0" x2="1">
-                <stop offset="0%" stopColor="#bbf7d0" />
-                <stop offset="100%" stopColor="#d1fae5" />
-              </linearGradient>
-            </defs>
-            <path
-              fill="url(#gA)"
-              d="M421,325Q371,400,306,435Q241,470,176,428Q111,386,74,330Q37,274,83,217Q129,160,204,124Q279,88,335,130Q391,172,429,238Q467,304,421,325Z"
-            />
-          </svg>
-
-          {/* subtle dashed accent */}
-          <svg
-            className="absolute left-14 top-24 w-40 h-40 text-yellow-300 opacity-50"
-            viewBox="0 0 40 40"
-            fill="none"
-            aria-hidden
-          >
-            <path
-              d="M4 20c6 0 12-10 32-8"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeDasharray="3 4"
-            />
-          </svg>
-
           {/* Illustration card */}
-          <div className="relative max-w-md p-10 rounded-3xl shadow-2xl bg-white/60 backdrop-blur-sm border border-white/40">
+          <div className="relative max-w-md p-10 rounded-3xl shadow-2xl bg-[#fffbeb]/60 backdrop-blur-sm border border-white/40">
             <h2 className="text-3xl font-extrabold text-gray-900 mb-4">
               Welcome to The book haven
             </h2>
@@ -142,7 +122,9 @@ const Register = () => {
                   24k
                 </div>
                 <div>
-                  <div className="text-sm text-gray-600 font-semibold">Readers</div>
+                  <div className="text-sm text-gray-600 font-semibold">
+                    Readers
+                  </div>
                   <div className="text-xs text-gray-500">
                     A trusted community of book lovers
                   </div>
@@ -154,7 +136,9 @@ const Register = () => {
                   1.2k
                 </div>
                 <div>
-                  <div className="text-sm text-gray-600  font-semibold">Collections</div>
+                  <div className="text-sm text-gray-600  font-semibold">
+                    Collections
+                  </div>
                   <div className="text-xs text-gray-500">
                     Curated, practical, and immersive reading experiences{" "}
                   </div>
@@ -168,7 +152,7 @@ const Register = () => {
         <main className="flex-1 flex items-center justify-center p-6 lg:p-12">
           <div className="w-full max-w-xl">
             {/* Floating glass card */}
-            <div className="relative bg-white/70 backdrop-blur-sm border border-white/40 rounded-3xl p-8 md:p-10 shadow-xl overflow-visible">
+            <div className="relative bg-[#fffbeb]/70 bacbackdrop-blur-sm border border-white/40 rounded-3xl p-8 md:p-10 shadow-xl overflow-visible">
               {/* top-brand / small nav */}
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
@@ -277,11 +261,6 @@ const Register = () => {
                     className="border border-gray-200 w-full py-2 px-2 rounded-sm focus:ring-2 focus:outline-none ring-emerald-200 focus:border-none text-black"
                     placeholder="Enter your email"
                   />
-                  {errors.email && (
-                    <div className="text-xs text-red-600 mt-2">
-                      {errors.email}
-                    </div>
-                  )}
                 </div>
 
                 {/* password */}

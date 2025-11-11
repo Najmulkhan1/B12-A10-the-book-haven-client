@@ -11,7 +11,6 @@ const Login = () => {
   const [pw, setPw] = useState("");
   const [show, setShow] = useState(false);
   const [remember, setRemember] = useState(false);
-  const [errors, setErrors] = useState({});
   const location = useLocation();
 
   //   const { userLogin } = useAuth();
@@ -67,6 +66,7 @@ const Login = () => {
       })
       .catch((error) => {
         console.log(error);
+        toast.error("Invalid-credential");
       });
   };
 
