@@ -161,7 +161,9 @@ const AddBook = () => {
                   type="number"
                   className="input w-full rounded-lg focus:border-0 focus:outline-gray-200"
                   name="rating"
-                  id=""
+                  min='1'
+                  max='5'
+                  required
                 />
               </div>
             </div>
