@@ -3,10 +3,12 @@ import RootLayouts from "../layouts/RootLayouts";
 import Home from "../pages/Home";
 import AllBooks from "../pages/AllBooks";
 import AddBook from "../pages/AddBook";
-import MyBooks from "../pages/MyBooks";
+
 import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
 import BookDetails from "../components/BookDetails";
+import PrivateRoute from "./PrivateRoute";
+import MyBooks from "../pages/MyBooks";
 
 const router = createBrowserRouter([
     {
@@ -23,11 +25,15 @@ const router = createBrowserRouter([
             },
             {
                 path: 'add-book',
-                Component: AddBook
+                element: <PrivateRoute>
+                    <AddBook></AddBook>
+                </PrivateRoute>
             },
             {
                 path: "my-books",
-                Component: MyBooks
+                element: <PrivateRoute>
+                    <MyBooks></MyBooks>
+                </PrivateRoute>
             },
             {
                 path: "login",

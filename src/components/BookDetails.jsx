@@ -3,13 +3,17 @@ import { Link, useParams } from "react-router";
 import useAxios from "../hooks/useAxios";
 import { ListStart, Star } from "lucide-react";
 import Review from "./Review";
+import useAuth from "../hooks/useAuth";
+import toast from "react-hot-toast";
 
 const BookDetails = () => {
   const { id } = useParams();
+  const { user } = useAuth();
   const axiosInstance = useAxios();
   const [book, setBook] = useState({});
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
+  const [comments, setComments] = useState([])
 
   useEffect(() => {
     axiosInstance(`/books/${id}`).then((data) => {
@@ -18,6 +22,113 @@ const BookDetails = () => {
     });
   }, [axiosInstance, setBook, id]);
 
+
+
+  // useEffect(() => {
+  //   const productId = id
+  //   axiosInstance(`/comments=${encodeURIComponent(productId)}`)
+  //   .then(res => {
+  //     console.log(res.data);
+  //     setComments(res.data)
+  //   })
+  // },[axiosInstance, setComments,id])
+
+  // const handleCommentSubmit = async (e) => {
+  //   e.preventDefault();
+  //   if(!user) return toast.error("please login to comment")
+
+
+  //   const userName = user.displayName;
+  //   const userimg = user.photoURL;
+  //   // const review = e.target.review.value;
+  //   const comment = e.target.comment.value;
+
+  //   console.log(userName, userimg, comment, rating, id);
+
+  //   const commentData = {
+  //     productId: id,
+  //     name: userName,
+  //     profileImg: userimg,
+  //     // rating: rating,
+  //     // review: review,
+  //     comment: comment,
+  //     created_at: new Date(),
+  //   };
+
+  //   // optimistic update: immediately show in UI
+  //   const tempId = `temp -${Date.now()}`
+  //   const optimistic = {...commentData, id: tempId}
+  //   setComments(prev => [optimistic, ...prev])
+  //   e.target.reset()
+  //   toast.success("Comment Posted!")
+
+  //   try {
+  //     const res = await axiosInstance.post('/comments', commentData)
+  //     const saved = res.data
+
+  //     setComments(prev => prev.map(c => c.id === tempId ? saved:c))
+  //   } catch (error) {
+  //     console.log(error);
+      
+  //   }
+
+  //   // axiosInstance.post("/comments", commentData).then((data) => {
+  //   //   console.log(data.data);
+  //   //   setComments(data.data)
+  //   // });
+  // };
+
+
+  useEffect(() => {
+  const productId = id;
+  axiosInstance.get(`/comments`, {
+    params: { productId }
+  })
+  .then(res => {
+    setComments(res.data);
+  })
+  .catch(err => {
+    console.error("Failed to fetch comments:", err);
+    setComments([]);
+  });
+}, [axiosInstance, id]);
+
+const handleCommentSubmit = async (e) => {
+  e.preventDefault();
+  if (!user) return toast.error("please login to comment");
+
+  const userName = user.displayName || "Anonymous";
+  const userimg = user.photoURL || "";
+  const commentText = e.target.comment.value.trim();
+  if (!commentText) return toast.error("Comment empty");
+
+  const commentData = {
+    productId: id,
+    name: userName,
+    profileImg: userimg,
+    comment: commentText,
+    created_at: new Date().toISOString(),
+  };
+
+  // optimistic update
+  const tempId = `temp-${Date.now()}`;
+  const optimistic = { ...commentData, id: tempId };
+  setComments(prev => [optimistic, ...prev]);
+  e.target.reset();
+  toast.success("Comment posted (pending save)...");
+
+  try {
+    const res = await axiosInstance.post("/comments", commentData);
+    console.log("POST /comments response:", res);
+    const saved = res.data;
+
+   
+    toast.success("Comment saved!");
+  } catch (error) {
+   
+    toast.error("Failed to save comment. Try again.", error);
+  }
+};
   return (
     <div className="w-11/12 mx-auto mt-4">
       <div className="grid gird-cols-1 md:grid-cols-2 gap-5">
@@ -60,15 +171,13 @@ const BookDetails = () => {
         </p>
       </div>
 
+      {/* cmt and review section */}
       <div>
-        <Review></Review>
-
-        <div>
-          <div className="border p-4 border-gray-300 rounded-md">
+        <aside>
+          <form action="">
             <div>
-              <form>
-                <div className="flex items-center gap-4 mt-6">
-                    <h2 className="font-semibold text-2xl mb-3">Rating</h2>
+              <div className="flex items-center gap-4 mt-6">
+                <h2 className="font-semibold text-2xl mb-3">Rating</h2>
 
                 <div className="flex items-center gap-1 mb-3">
                   {Array.from({ length: 5 }).map((_, i) => {
@@ -106,21 +215,67 @@ const BookDetails = () => {
                     {rating ? `${rating}/5` : ""}
                   </span>
                 </div>
-                </div>
-                
+              </div>
 
-                <h2 className="font-semibold mb-2">Comments</h2>
+              <div>
+                <h2 className="text-xl text-amber-500 font-semibold my-2">
+                  Book Review
+                </h2>
                 <textarea
-                  className="border w-full border-gray-300 rounded-md py-3 px-3"
-                  name=""
+                  name="review"
+                  className="border w-1/2 border-amber-200 rounded-md px-2 py-2"
+                  rows={3}
+                ></textarea>
+              </div>
+            </div>
+          </form>
+        </aside>
+
+        {/* comment section */}
+        <div className="mt-5">
+          <div className="border p-4 border-gray-300 rounded-md">
+            <div>
+              <form onSubmit={handleCommentSubmit}>
+                <h2 className="font-semibold mt-4 mb-2 text-xl text-amber-500">
+                  Comments
+                </h2>
+                <textarea
+                  className="border border-amber-200 w-full  rounded-md py-3 px-3"
+                  name="comment"
                   rows="5"
                 ></textarea>
                 <div>
-                  <button className="btn bg-amber-600 text-white px-10">
+                  <button
+                    type="submit"
+                    className="btn bg-amber-600 text-white px-10"
+                  >
                     Post
                   </button>
                 </div>
               </form>
+            </div>
+
+
+            {/* show comments */}
+
+            <div>
+              {comments.map(c => 
+                <div key={c.id ?? c.created_at} className="chat chat-start">
+                <div className="chat-image avatar">
+                  <div className="w-10 rounded-full">
+                    <img
+                      alt="Tailwind CSS chat bubble component"
+                      src={c.profileImg}
+                    />
+                  </div>
+                </div>
+                <div className="chat-bubble text-wrap">
+                 {c.comment}
+                </div>
+                <p>{c.name}</p>
+              </div>
+              )}
+              
             </div>
           </div>
         </div>
