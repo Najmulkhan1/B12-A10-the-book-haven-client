@@ -15,28 +15,28 @@ const slidesDefault = [
     title: "Your Next Chapter Awaits",
     subtitle:
       "Handpicked books, fresh arrivals, and cozy reads — all in one place.",
-    ctaPrimary: { label: "Shop new arrivals", to: "/books" },
+    ctaPrimary: { label: "All Books", to: "/books" },
     ctaSecondary: { label: "Create book", to: "/add-book" },
     image: 'https://images.unsplash.com/photo-1604866830893-c13cafa515d5?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=687'
   },
   {
     title: "Monthly Bestsellers",
     subtitle: "See what's trending — editor-selected bestsellers this month.",
-    ctaPrimary: { label: "Explore bestsellers", to: "/bestsellers" },
+ctaPrimary: { label: "All Books", to: "/books" },
     ctaSecondary: { label: "View genres", to: "/genres" },
     image: 'https://images.unsplash.com/photo-1667312939934-60fc3bfa4ec0?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fGJvb2tzfGVufDB8fDB8fHww&auto=format&fit=crop&q=60&w=400'
   },
   {
     title: "Curated Cozy Reads",
     subtitle: "Perfect picks for slow evenings and relaxed weekends.",
-    ctaPrimary: { label: "Find your cozy read", to: "/cozy-reads" },
+    ctaPrimary: { label: "All Books", to: "/books" },
     ctaSecondary: { label: "My list", to: "/my-list" },
     image: 'https://images.unsplash.com/photo-1513001900722-370f803f498d?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fGJvb2tzfGVufDB8fDB8fHww&auto=format&fit=crop&q=60&w=400'
   },
   {
     title: "Editor’s Picks & New Releases",
     subtitle: "Fresh titles and staff favorites — stay inspired.",
-    ctaPrimary: { label: "See all new releases", to: "/new-releases" },
+    ctaPrimary: { label: "All Books", to: "/books" },
     ctaSecondary: { label: "Contact Us", to: "/contact" },
     image: 'https://images.unsplash.com/photo-1556566952-11eff3d06ed4?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mzh8fGJvb2tzfGVufDB8fDB8fHww&auto=format&fit=crop&q=60&w=400'
   },
@@ -60,7 +60,6 @@ const HeroCarousel = ({ slides = slidesDefault, interval = 3600 }) => {
   const progressRef = useRef(null);
   const slideData = slides[index];
 
-  // Auto-advance logic (functionality unchanged)
   useEffect(() => {
     if (paused) return;
     const start = Date.now();
@@ -74,7 +73,6 @@ const HeroCarousel = ({ slides = slidesDefault, interval = 3600 }) => {
     return () => clearInterval(timerRef.current);
   }, [paused, index, interval, slidesCount]);
 
-  // Reset progress bar on slide change (functionality unchanged)
   useEffect(() => {
     if (progressRef.current) {
       progressRef.current.style.transition = "none";
@@ -95,17 +93,14 @@ const HeroCarousel = ({ slides = slidesDefault, interval = 3600 }) => {
     <section className="w-11/12 max-w-7xl mx-auto py-12">
       <div className="relative overflow-hidden min-h-[30rem] rounded-3xl bg-base-200 shadow-2xl">
         
-        {/* Background Decorative Element (Optional: for better visual context in Glassmorphism) */}
         <div className="absolute inset-0 opacity-20 [mask-image:radial-gradient(ellipse_at_top,_#000,_transparent)]">
             <div className="h-full w-full bg-primary/20 blur-3xl mix-blend-multiply animate-pulse" />
         </div>
         
-        {/* top progress bar */}
         <div className="absolute inset-x-0 top-0 h-1 bg-base-content/10 z-20">
           <div ref={progressRef} className="h-full bg-warning w-0 transition-all" style={{ width: "0%" }} />
         </div>
 
-        {/* Main Content Area: The "Glass" layer */}
         <div
           className="relative z-10 p-6 md:p-12 h-full bg-base-300/60 backdrop-blur-md border border-base-content/10 transition-colors duration-300"
           onMouseEnter={() => setPaused(true)}
@@ -114,7 +109,6 @@ const HeroCarousel = ({ slides = slidesDefault, interval = 3600 }) => {
           onBlur={() => setPaused(false)}
         >
           <div className="grid grid-cols-1 md:grid-cols-12 gap-10 items-center">
-            {/* Text Content */}
             <div className="md:col-span-7 order-2 md:order-1">
               <AnimatePresence initial={false} mode="wait">
                 <motion.div
@@ -132,15 +126,13 @@ const HeroCarousel = ({ slides = slidesDefault, interval = 3600 }) => {
                   </p>
 
                   <div className="mt-8 flex flex-wrap items-center gap-3">
-                    {/* Primary CTA Button (Solid Primary with Outline) */}
                     <Link
                       to={slideData.ctaPrimary?.to || "/all-books"}
-                      className="btn btn-primary btn-lg font-bold shadow-lg shadow-primary/30 hover:scale-[1.02] border-2 border-primary transition-transform"
+                      className="btn bg-amber-600 btn-lg font-bold shadow-lg shadow-amber-600/30 hover:scale-[1.02]  transition-transform"
                     >
                       {slideData.ctaPrimary?.label || "Browse books"}
                     </Link>
 
-                    {/* Secondary CTA Button (Ghost/Low-Profile) */}
                     <Link
                       to={slideData.ctaSecondary?.to || "/create-book"}
                       className="btn btn-ghost text-base-content hover:bg-base-content/10"
@@ -150,7 +142,6 @@ const HeroCarousel = ({ slides = slidesDefault, interval = 3600 }) => {
                   </div>
 
                   <div className="mt-10 flex gap-8 text-sm text-base-content/70 items-center border-t border-base-content/10 pt-6">
-                    {/* Feature 1 */}
                     <div className="inline-flex items-center gap-2">
                       <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center shadow-inner">
                         <CheckCircle className="w-5 h-5 text-primary" />
@@ -161,7 +152,6 @@ const HeroCarousel = ({ slides = slidesDefault, interval = 3600 }) => {
                       </div>
                     </div>
 
-                    {/* Feature 2 */}
                     <div className="inline-flex items-center gap-2">
                       <div className="w-10 h-10 bg-success/10 rounded-full flex items-center justify-center shadow-inner">
                         <Zap className="w-5 h-5 text-success" />
@@ -178,7 +168,6 @@ const HeroCarousel = ({ slides = slidesDefault, interval = 3600 }) => {
               </AnimatePresence>
             </div>
 
-            {/* Image/Visual Area */}
             <div className="md:col-span-5 order-1 md:order-2 flex items-center justify-center relative min-h-[16rem]">
               <motion.div
                 key={index}
@@ -203,9 +192,7 @@ const HeroCarousel = ({ slides = slidesDefault, interval = 3600 }) => {
             </div>
           </div>
 
-          {/* Controls */}
           <div className="mt-12 flex items-center justify-between">
-            {/* Navigation Buttons */}
             <div className="flex items-center gap-3">
               <button
                 onClick={() => prev()}
@@ -224,7 +211,6 @@ const HeroCarousel = ({ slides = slidesDefault, interval = 3600 }) => {
               </button>
             </div>
 
-            {/* Pagination Dots */}
             <div className="flex items-center gap-3">
               <div className="hidden sm:flex items-center gap-2 text-sm text-base-content/60 font-medium">
                 <span className="text-lg font-bold text-base-content/90">{index + 1}</span> / {slidesCount}

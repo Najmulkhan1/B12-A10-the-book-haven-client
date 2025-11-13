@@ -39,7 +39,7 @@ const Register = () => {
 
   const googleSignUp = () => {
     googleSignIn()
-      .then((result) => {
+      .then(() => {
         toast.success("Successfully Logged!");
         navigator(location.state || "/");
       })
@@ -87,10 +87,7 @@ const Register = () => {
     }
   };
 
-  const handleTogglePasswordShow = (e) => {
-    e.preventDefault();
-    setShow((s) => !s);
-  };
+  
 
   return (
     <div className="min-h-screen bg-base-200">

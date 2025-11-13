@@ -68,7 +68,7 @@ const AllBooks = () => {
     }
 
   return (
-    <div className="max-w-7xl mx-auto my-10 min-h-screen">
+    <div className="max-w-7xl p-2 mx-auto my-10 min-h-screen">
       <div className="space-y-10">
         {/* Title */}
         <h1 className="text-center text-3xl font-bold md:text-5xl text-base-content">
@@ -79,7 +79,7 @@ const AllBooks = () => {
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mt-10">
           <div className="order-2 sm:order-1 w-full sm:w-auto text-center sm:text-left">
             <h2 className="text-xl font-medium text-base-content/80">
-              Total Books: <span className="font-bold text-primary">{books.length}</span>
+              Total Books: <span className="font-bold text-amber-600">{books.length}</span>
             </h2>
           </div>
 
@@ -88,7 +88,7 @@ const AllBooks = () => {
             <div className="relative flex w-full">
               {/* 🔍 Search Icon */}
               <Search
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-base-content/60"
+                className="absolute left-3 z-50 top-1/2 -translate-y-1/2 text-base-content/60"
                 size={18}
               />
 
@@ -104,7 +104,7 @@ const AllBooks = () => {
               {/* 🔘 Search Button */}
               <button
                 type="submit"
-                className="btn btn-primary rounded-l-none font-medium shadow-md hover:shadow-lg"
+                className="btn bg-amber-600 text-white rounded-l-none font-medium shadow-md hover:shadow-lg"
               >
                 Search
               </button>
@@ -189,13 +189,13 @@ const AllBooks = () => {
                     </td>
 
                     <td className="py-4 whitespace-nowrap">
-                      <Stars value={book.rating} />
+                      <Stars value={book.rating}/>
                     </td>
 
                     <td className="py-4 whitespace-nowrap text-right">
                       <Link
                         to={`/books-details/${book._id}`}
-                        className="btn btn-sm btn-primary btn-outline font-medium shadow-md"
+                        className="btn btn-sm border border-amber-600 text-amber-600 font-medium shadow-md"
                         aria-label={`View details for ${book.title}`}
                       >
                         View Details

@@ -22,11 +22,11 @@ const Star = ({ filled }) => (
  * BookCover component (updated for DaisyUI theme and shadows)
  */
 const BookCover = ({ src, title }) => (
-  <div className="w-40 md:w-48 lg:w-56 rounded-xl overflow-hidden bg-base-300 shadow-2xl ring-4 ring-warning/20">
+  <div className="w-80 h-120 rounded-xl overflow-hidden bg-base-300 shadow-2xl ring-4 ring-warning/20">
     <img 
       src={src} 
       alt={`Cover of ${title}`} 
-      className="w-full h-full object-cover transition-transform duration-500 hover:scale-105" 
+      className="w-full h-full object-fill transition-transform duration-500 hover:scale-105" 
       loading="lazy" 
     />
   </div>
@@ -94,10 +94,10 @@ export default function BookOfTheWeek({ book = defaultBook, onRead, className = 
 
             <hr className="border-base-300 my-4" />
 
-            {/* Meta Data (Year, Pages, Rating) */}
+           
             <div className="flex flex-wrap items-center gap-6 mb-4 text-base-content/80">
                 
-                {/* Rating */}
+                
                 <div className="flex items-center gap-1">
                     <div className="flex items-center gap-0.5">
                         {Array.from({ length: 5 }).map((_, i) => (

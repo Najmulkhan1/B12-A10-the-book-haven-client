@@ -7,6 +7,7 @@ import { FaRegEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import Swal from "sweetalert2";
 import Loading from "../components/Loading";
+import { Search } from "lucide-react";
 
 const MyBooks = () => {
   const { user, loading } = useAuth();
@@ -96,7 +97,8 @@ const MyBooks = () => {
     const author = form.author.value;
     const authorImg = form.authorImg.value;
     const category = form.category.value;
-    const rating = form.rating?.value;
+    const rating = Number(parseFloat(form.rating.value).toFixed(1));
+
     const summary = form.summary.value;
     const bookImage = form.bookImage.value;
     const userEmail = form.email.value;
@@ -139,6 +141,20 @@ const MyBooks = () => {
     }
   };
 
+  // Search Handler (Functionality preserved)
+  const handleSearch = (e) => {
+    e.preventDefault();
+
+    setIsDataLoading(true);
+
+    const search_text = e.target.search.value;
+
+    axiosInstance.get(`/search?search=${search_text}`).then((res) => {
+      setBooks(res.data);
+      setIsDataLoading(false);
+    });
+  };
+
   if (loading || isDataLoading) {
     return <Loading></Loading>;
   }
@@ -152,29 +168,35 @@ const MyBooks = () => {
           </h1>
 
           {/* Search and Sort (Styled with DaisyUI inputs/select) */}
-          <div className="flex items-center gap-3 w-full md:w-auto mt-2 md:mt-0">
-            {/* Search Input */}
-            <label htmlFor="search" className="sr-only">
-              Search books
-            </label>
-            <input
-              id="search"
-              placeholder="Search by title, author or genre..."
-              // DaisyUI classes for input
-              className="input input-bordered w-full md:w-80 input-sm text-base-content bg-base-100"
-            />
+          <form
+            onSubmit={handleSearch}
+            className="order-1 sm:order-2 w-full max-w-lg"
+          >
+            <div className="relative flex w-full ">
+              {/* 🔍 Search Icon */}
+              <Search
+                className="absolute left-3 top-1/2 z-50 -translate-y-1/2 text-base-content/60"
+                size={18}
+              />
 
-            {/* Sort Dropdown */}
-            <select
-              aria-label="Sort by"
-              // DaisyUI classes for select
-              className="select select-bordered select-sm text-base-content bg-base-100"
-            >
-              <option value="title">Title</option>
-              <option value="author">Author</option>
-              <option value="genre">Genre</option>
-            </select>
-          </div>
+              {/* 🔎 Input Field */}
+              <input
+                type="search"
+                name="search"
+                placeholder="Search book title..."
+                // DaisyUI classes for input
+                className="input input-bordered w-full rounded-r-none pl-10 pr-4 bg-base-100 text-base-content shadow-md focus:ring-1 focus:ring-primary focus:border-primary"
+              />
+
+              {/* 🔘 Search Button */}
+              <button
+                type="submit"
+                className="btn bg-amber-600 text-white rounded-l-none font-medium shadow-md hover:shadow-lg"
+              >
+                Search
+              </button>
+            </div>
+          </form>
         </header>
 
         <hr className="border-t border-base-300 mb-6" />
@@ -310,11 +332,11 @@ const MyBooks = () => {
                           alt={`Cover of ${book.title}`}
                           className="w-20 h-28 rounded-lg object-cover shadow-md"
                         />
-                         <div className="mt-2 absolute right-0">
-                            <span className="badge badge-outline badge-info text-xs font-medium">
-                              {book.category}
-                            </span>
-                          </div>
+                        <div className="mt-2 absolute right-0">
+                          <span className="badge badge-outline badge-info text-xs font-medium">
+                            {book.category}
+                          </span>
+                        </div>
                       </div>
 
                       {/* Book Info */}
@@ -326,15 +348,13 @@ const MyBooks = () => {
                           <div className="text-sm text-base-content/70 mt-1 font-medium">
                             {book.author}
                           </div>
-                         <div className="flex items-center gap-1">
+                          <div className="flex items-center gap-1">
                             <Stars value={book.rating} />
                           </div>
                         </div>
 
                         {/* Rating + Actions */}
                         <div className="mt-3 pt-2 w-full flex items-center justify-between border-t border-base-200 sm:border-t-0 sm:flex-col sm:items-end sm:justify-center sm:w-auto">
-                          
-
                           <div className="flex gap-2 mt-2 sm:mt-0">
                             <button
                               onClick={() => handleDelete(book._id)}
@@ -486,6 +506,7 @@ const MyBooks = () => {
                   name="rating"
                   min="1"
                   max="5"
+                  step="0.1"
                   defaultValue={edit?.rating}
                   required
                 />

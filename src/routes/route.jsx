@@ -3,13 +3,14 @@ import RootLayouts from "../layouts/RootLayouts";
 import Home from "../pages/Home";
 import AllBooks from "../pages/AllBooks";
 import AddBook from "../pages/AddBook";
-
 import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
 import BookDetails from "../components/BookDetails";
 import PrivateRoute from "./PrivateRoute";
 import MyBooks from "../pages/MyBooks";
 import Error from "../pages/Error";
+import MyProfile from "../pages/MyProfile";
+
 
 const router = createBrowserRouter([
     {
@@ -48,6 +49,11 @@ const router = createBrowserRouter([
                 path: '/books-details/:id',
                 Component: BookDetails
             },
+            {
+                path: '/profile',
+                Component: MyProfile
+            },
+            
             {
         path: '*',
         Component: Error

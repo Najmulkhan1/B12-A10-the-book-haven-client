@@ -3,6 +3,7 @@ import BackButton from "../components/BackButton";
 import { Link } from "react-router";
 import useAuth from "../hooks/useAuth";
 import useAxios from "../hooks/useAxios";
+import toast from "react-hot-toast";
 
 const AddBook = () => {
   const { user } = useAuth();
@@ -17,7 +18,7 @@ const AddBook = () => {
     const author = form.author.value;
     const authorImg = form.authorImg.value;
     const category = form.category.value;
-    const rating = form.rating.value;
+    const rating = parseFloat(form.rating.value);
     const summary = form.summary.value;
     const bookImage = form.bookImage.value;
     const userEmail = form.email.value;
@@ -39,7 +40,7 @@ const AddBook = () => {
       author: author,
       authorImg: authorImg,
       category: category,
-      rating: parseFloat(rating),
+      rating: Number(parseFloat(rating).toFixed(1)),
       summary: summary,
       bookImage: bookImage,
       userEmail: userEmail,
@@ -49,7 +50,10 @@ const AddBook = () => {
 
     axiosInstance.post("books", newBook).then((data) => {
       console.log(data.data);
+      toast.success("Book Added!");
+     
     });
+     e.target.reset();
   };
 
   return (
@@ -144,7 +148,9 @@ const AddBook = () => {
                       -- Select Genre --
                     </option>
                     <option value="Classic Fiction">Classic Fiction</option>
-                    <option value="Historical Fiction">Historical Fiction</option>
+                    <option value="Historical Fiction">
+                      Historical Fiction
+                    </option>
                     <option value="Fantasy">Fantasy</option>
                     <option value="Science Fiction">Science Fiction</option>
                     <option value="Mystery">Mystery</option>
@@ -185,8 +191,10 @@ const AddBook = () => {
                     type="number"
                     className="input input-bordered w-full"
                     name="rating"
-                    min="1"
-                    max="5"
+                    min={0}
+                    max={5}
+                    step={0.1}
+                    inputMode="decimal"
                     required
                   />
                 </div>
@@ -259,7 +267,7 @@ const AddBook = () => {
               {/* Submit Button */}
               <button
                 type="submit"
-                className="btn btn-primary w-full mt-8 shadow-md hover:shadow-lg transition-shadow"
+                className="btn bg-amber-600 text-white w-full mt-8 shadow-md hover:shadow-lg transition-shadow"
               >
                 Add Book
               </button>

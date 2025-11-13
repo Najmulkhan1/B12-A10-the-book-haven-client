@@ -48,10 +48,10 @@ const LatestBooks = () => {
           </div>
           
           <div className="mt-4 sm:mt-0">
-            <button className="btn border border-amber-600 hover:text-white hover:bg-amber-600 font-semibold">
+            <Link to={'/all-books'} className="btn border border-amber-600 hover:text-white hover:bg-amber-600 font-semibold">
                 See All
                 <ChevronRight className="w-5 h-5" />
-            </button>
+            </Link>
           </div>
         </header>
 

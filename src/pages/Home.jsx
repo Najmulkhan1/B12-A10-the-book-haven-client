@@ -20,13 +20,14 @@ const Home = () => {
 
   return (
     <div>
-        <Banner></Banner>
+        {/* <Banner></Banner> */}
         <HeroCarousel></HeroCarousel>
         <LatestBooks></LatestBooks>
         <TopGenres></TopGenres>
         <BookOfTheWeek></BookOfTheWeek>
-        <AboutTheBookHaven></AboutTheBookHaven>
         <TopRated></TopRated>
+        <AboutTheBookHaven></AboutTheBookHaven>
+        
     </div>
   )
 }

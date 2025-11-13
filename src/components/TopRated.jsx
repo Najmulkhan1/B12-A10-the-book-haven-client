@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import useAxios from '../hooks/useAxios';
 import { Star, TrendingUp, User, Crown, Feather, BookOpen } from 'lucide-react'; 
+import { Link } from 'react-router';
 
 const TopRated = () => {
     const axiosInstance = useAxios();
@@ -102,7 +103,7 @@ const TopRated = () => {
                                 {/* Rating Display */}
                                 <div className="flex items-center gap-2">
                                     <span className="text-2xl font-extrabold text-warning">
-                                        {book.rating ? book.rating.toFixed(1) : 'N/A'}
+                                        {book.rating ? book.rating : 'N/A'}
                                     </span>
                                     
                                     <div className="flex items-center space-x-0.5">
@@ -120,9 +121,9 @@ const TopRated = () => {
                                 </div>
                                 
                                 {/* Action/Link Button */}
-                                <button className="btn btn-warning btn-outline btn-sm font-semibold">
+                                <Link to={`/books-details/${book._id}`} className="btn btn-warning btn-outline btn-sm font-semibold">
                                     Read Details
-                                </button>
+                                </Link>
                             </div>
                         </div>
                     </div>

@@ -207,7 +207,7 @@ const Login = () => {
                     Home
                   </Link>
                   <Link
-                    to="/signup"
+                    to="/register"
                     className="text-sm text-base-content/80 hover:text-primary" 
                   >
                     Sign up

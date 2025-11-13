@@ -4,6 +4,8 @@ import logo from "../assets/logo3.svg";
 import useAuth from "../hooks/useAuth";
 import { Tooltip } from "react-tooltip";
 import Switch from "./Switch";
+import { Settings } from "lucide-react";
+import { BsPersonFillGear } from "react-icons/bs";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
@@ -115,7 +117,8 @@ const Navbar = () => {
                           clickable
                           className="hidden md:block"
                         >
-                          <h3>{user?.displayName}</h3>
+                          <h3 className="text-lg text-amber-600 font-semibold">{user?.displayName}</h3>
+                          <Link to={'/profile'} className="flex mt-4 text-amber-600 items-center gap-3 p-2 rounded-sm border border-amber-600"><BsPersonFillGear/> My Profile</Link>
                           <button
                             onClick={handleLogout}
                             className="bg-amber-600  py-1 px-2 rounded-sm mt-3 cursor-pointer"
@@ -140,6 +143,7 @@ const Navbar = () => {
                           {user.displayName}
                         </li>
                         <li className="text-xs">{user.email}</li>
+                        <li><Link to={'/profile'} className="flex mt-4 text-amber-600 items-center gap-3 p-2 rounded-sm border border-amber-600"><BsPersonFillGear/> My Profile</Link></li>
 
                         <li className="pt-3">
                           <button
@@ -220,7 +224,7 @@ const Navbar = () => {
         <div
           className={`absolute right-0 w-1/2 rounded sm:hidden ${
             open ? "block" : "hidden"
-          } bg-green-50 border-t border-gray-200`}
+          } bg-amber-100 border-t border-gray-200`}
         >
           <div className="px-4 py-3 space-y-2">
             {navItems.map((item) => (
@@ -230,8 +234,8 @@ const Navbar = () => {
                 onClick={() => setOpen(false)}
                 className={({ isActive }) =>
                   isActive
-                    ? "block text-green-600 font-medium bg-green-100 px-3 py-2 rounded-md"
-                    : "block text-gray-700 hover:text-green-600 hover:bg-green-50 px-3 py-2 rounded-md"
+                    ? "block text-amber-600 font-medium bg-amber-200 px-3 py-2 rounded-md"
+                    : "block text-gray-700 hover:text-amber-700 hover:bg-amber-50 px-3 py-2 rounded-md"
                 }
               >
                 {item.label}
