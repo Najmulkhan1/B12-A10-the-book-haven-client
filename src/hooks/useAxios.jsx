@@ -2,7 +2,7 @@ import axios from "axios"
 
 
  const axiosInstance = axios.create({
-    baseURL: 'http://localhost:4000'
+    baseURL: 'https://the-book-haven-server.vercel.app/'
  })
 
  const useAxios = () => {
