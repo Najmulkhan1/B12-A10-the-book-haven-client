@@ -7,7 +7,7 @@ import useAxios from "../hooks/useAxios";
 const AddBook = () => {
   const { user } = useAuth();
 
-  const axiosInstance = useAxios()
+  const axiosInstance = useAxios();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -35,193 +35,236 @@ const AddBook = () => {
     );
 
     const newBook = {
-        title: title,
-        author: author,
-        authorImg: authorImg,
-        category: category,
-        rating: parseFloat(rating),
-        summary: summary,
-        bookImage: bookImage,
-        userEmail: userEmail,
-        userName: userName,
-        created_at: new Date()
-    }
+      title: title,
+      author: author,
+      authorImg: authorImg,
+      category: category,
+      rating: parseFloat(rating),
+      summary: summary,
+      bookImage: bookImage,
+      userEmail: userEmail,
+      userName: userName,
+      created_at: new Date(),
+    };
 
-    axiosInstance.post('books',newBook)
-    .then((data)=> {
-        console.log(data.data);
-    })
-
+    axiosInstance.post("books", newBook).then((data) => {
+      console.log(data.data);
+    });
   };
 
   return (
-    <div className="w-11/12 mx-auto min-h-120">
-      <div className="flex justify-center mt-4">
-        <div className="bg-[#fffbeb]/30 rounded shadow-2xl w-124 min-h-120 p-4">
-          <div className="flex items-center justify-between px-4 py-2 relative">
-            {/* Left side */}
-            <div className="flex items-center gap-2 absolute left-4">
-              <Link to="/">
-                <BackButton />
-              </Link>
+    <div className="w-11/12 mx-auto min-h-screen py-10">
+      <div className="flex justify-center">
+        {/* The main container is styled as a card */}
+        <div className="card w-full max-w-4xl bg-base-100 shadow-xl border border-base-200">
+          <div className="card-body p-4 sm:p-8">
+            {/* Header with Back Button and Title */}
+            <div className="flex items-center justify-center relative mb-6 border-b border-base-200 pb-4">
+              {/* Back Button position (absolute for layout) */}
+              <div className="absolute left-0">
+                <Link to="/">
+                  <BackButton />
+                </Link>
+              </div>
+
+              {/* Center Title */}
+              <h2 className="text-2xl md:text-3xl font-bold text-base-content">
+                Add New Book 📖
+              </h2>
             </div>
 
-            {/* Center title */}
-            <div className="flex-grow text-center">
-              <h2 className="text-xl md:text-2xl font-bold">Book Add</h2>
-            </div>
+            {/* Form */}
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Row 1: Title and Author */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Title field */}
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text text-base font-medium text-base-content/80">
+                      Title
+                    </span>
+                  </label>
+                  <input
+                    type="text"
+                    className="input input-bordered w-full"
+                    name="title"
+                    required
+                  />
+                </div>
+
+                {/* Author Field */}
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text text-base font-medium text-base-content/80">
+                      Author
+                    </span>
+                  </label>
+                  <input
+                    type="text"
+                    className="input input-bordered w-full"
+                    name="author"
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Row 2: Author Image URL (Full Width) */}
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text text-base font-medium text-base-content/80">
+                    Author Image URL
+                  </span>
+                  <span className="label-text-alt text-base-content/50">
+                    (optional)
+                  </span>
+                </label>
+                <input
+                  type="url"
+                  className="input input-bordered w-full"
+                  name="authorImg"
+                />
+              </div>
+
+              {/* Row 3: Genre Category and Rating */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Genre Select */}
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text text-base font-medium text-base-content/80">
+                      Genre
+                    </span>
+                  </label>
+                  <select
+                    name="category"
+                    className="select select-bordered w-full"
+                    defaultValue="1"
+                    required
+                  >
+                    <option value="1" disabled>
+                      -- Select Genre --
+                    </option>
+                    <option value="Classic Fiction">Classic Fiction</option>
+                    <option value="Historical Fiction">Historical Fiction</option>
+                    <option value="Fantasy">Fantasy</option>
+                    <option value="Science Fiction">Science Fiction</option>
+                    <option value="Mystery">Mystery</option>
+                    <option value="Thriller">Thriller</option>
+                    <option value="Romance">Romance</option>
+                    <option value="Adventure">Adventure</option>
+                    <option value="Non-Fiction">Non-Fiction</option>
+                    <option value="Philosophical Fiction">
+                      Philosophical Fiction
+                    </option>
+                    <option value="Psychological Fiction">
+                      Psychological Fiction
+                    </option>
+                    <option value="Gothic Fiction">Gothic Fiction</option>
+                    <option value="Gothic Romance">Gothic Romance</option>
+                    <option value="Magical Realism">Magical Realism</option>
+                    <option value="Epic Poetry">Epic Poetry</option>
+                    <option value="Classic Epic">Classic Epic</option>
+                    <option value="Tech Thriller">Tech Thriller</option>
+                    <option value="Drama">Drama</option>
+                    <option value="Coming-of-Age Fiction">
+                      Coming-of-Age Fiction
+                    </option>
+                    <option value="Southern Gothic">Southern Gothic</option>
+                    <option value="Modernist Fiction">Modernist Fiction</option>
+                    <option value="Dystopian Fiction">Dystopian Fiction</option>
+                  </select>
+                </div>
+
+                {/* Rating Input */}
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text text-base font-medium text-base-content/80">
+                      Rating (1-5)
+                    </span>
+                  </label>
+                  <input
+                    type="number"
+                    className="input input-bordered w-full"
+                    name="rating"
+                    min="1"
+                    max="5"
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Row 4: Summary (Full Width Textarea) */}
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text text-base font-medium text-base-content/80">
+                    Summary
+                  </span>
+                </label>
+                <textarea
+                  name="summary"
+                  required
+                  rows="3"
+                  className="textarea textarea-bordered h-32 w-full"
+                  placeholder="Enter a brief summary of the book"
+                ></textarea>
+              </div>
+
+              {/* Row 5: Book Cover Image (Full Width) */}
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text text-base font-medium text-base-content/80">
+                    Book Cover Image URL
+                  </span>
+                </label>
+                <input
+                  type="url"
+                  className="input input-bordered w-full"
+                  name="bookImage"
+                />
+              </div>
+
+              {/* Row 6: User Info (Read-Only) */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* User Email */}
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text text-base font-medium text-base-content/80">
+                      User Email (Read-only)
+                    </span>
+                  </label>
+                  <input
+                    type="email"
+                    className="input input-bordered w-full input-disabled bg-base-200"
+                    name="email"
+                    defaultValue={user?.email}
+                    readOnly
+                  />
+                </div>
+                {/* User Name */}
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text text-base font-medium text-base-content/80">
+                      User Name (Read-only)
+                    </span>
+                  </label>
+                  <input
+                    type="text"
+                    className="input input-bordered w-full input-disabled bg-base-200"
+                    name="name"
+                    defaultValue={user?.displayName}
+                    readOnly
+                  />
+                </div>
+              </div>
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                className="btn btn-primary w-full mt-8 shadow-md hover:shadow-lg transition-shadow"
+              >
+                Add Book
+              </button>
+            </form>
           </div>
-
-          <form onSubmit={handleSubmit} className="space-y-3">
-            <div className="grid grid-cols-2 gap-4">
-              {/* title field */}
-              <div>
-                <label className="block">Title</label>
-                <input
-                  type="text"
-                  className="input w-full rounded-lg focus:border-0 focus:outline-gray-200"
-                  name="title"
-                  required
-                />
-              </div>
-
-              {/* author Field */}
-              <div>
-                <label className="block">Author</label>
-                <input
-                  type="text"
-                  className="input w-full rounded-lg focus:border-0 focus:outline-gray-200"
-                  name="author"
-                  required
-                />
-              </div>
-            </div>
-
-            {/* author image */}
-            <div>
-              <label className="block">
-                Author Image Url{" "}
-                <span className="text-gray-500">(optional)</span>
-              </label>
-              <input
-                type="url"
-                className="input w-full rounded-lg focus:border-0 focus:outline-gray-200"
-                name="authorImg"
-              />
-            </div>
-
-            {/* genre category */}
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block">Genre</label>
-                <select
-                  name="category"
-                  className="select w-full rounded-lg focus:border-0 focus:outline-gray-200"
-                  defaultValue='1'
-                  required
-                >
-                  <option value="1" disabled>
-                    -- Select Genre --
-                  </option>
-                  <option value="Classic Fiction">Classic Fiction</option>
-                  <option value="Historical Fiction">Historical Fiction</option>
-                  <option value="Fantasy">Fantasy</option>
-                  <option value="Science Fiction">Science Fiction</option>
-                  <option value="Mystery">Mystery</option>
-                  <option value="Thriller">Thriller</option>
-                  <option value="Romance">Romance</option>
-                  <option value="Adventure">Adventure</option>
-                  <option value="Non-Fiction">Non-Fiction</option>
-                  <option value="Philosophical Fiction">
-                    Philosophical Fiction
-                  </option>
-                  <option value="Psychological Fiction">
-                    Psychological Fiction
-                  </option>
-                  <option value="Gothic Fiction">Gothic Fiction</option>
-                  <option value="Gothic Romance">Gothic Romance</option>
-                  <option value="Magical Realism">Magical Realism</option>
-                  <option value="Epic Poetry">Epic Poetry</option>
-                  <option value="Classic Epic">Classic Epic</option>
-                  <option value="Tech Thriller">Tech Thriller</option>
-                  <option value="Drama">Drama</option>
-                  <option value="Coming-of-Age Fiction">
-                    Coming-of-Age Fiction
-                  </option>
-                  <option value="Southern Gothic">Southern Gothic</option>
-                  <option value="Modernist Fiction">Modernist Fiction</option>
-                  <option value="Dystopian Fiction">Dystopian Fiction</option>
-                </select>
-              </div>
-
-              {/* rating */}
-              <div>
-                <label htmlFor="">Rating</label>
-                <input
-                  type="number"
-                  className="input w-full rounded-lg focus:border-0 focus:outline-gray-200"
-                  name="rating"
-                  min='1'
-                  max='5'
-                  required
-                />
-              </div>
-            </div>
-
-            {/* summary */}
-            <div>
-              <label className="label font-medium">Summary</label>
-              <textarea
-                name="summary"
-                required
-                rows="3"
-                className="textarea w-full rounded-2xl focus:border-0 focus:outline-gray-200 h-[250px]"
-                placeholder="Enter summary"
-              ></textarea>
-            </div>
-
-            {/* cover image */}
-            <div>
-              <label className="label font-medium">Book Cover Image</label>
-              <input
-                type="url"
-                className="input w-full rounded-lg focus:border-0 focus:outline-gray-200"
-                name="bookImage"
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              {/* user Email*/}
-              <div>
-                <label className="label font-medium">User Email</label>
-                <input
-                  type="email;"
-                  className="input w-full rounded-lg focus:border-0 focus:outline-gray-200"
-                  name="email"
-                  defaultValue={user?.email}
-                  readOnly
-                />
-              </div>
-              {/* user name */}
-              <div>
-                <label className="label font-medium">User Name</label>
-                <input
-                  type="text"
-                  className="input w-full rounded-lg focus:border-0 focus:outline-gray-200"
-                  name="name"
-                  defaultValue={user?.displayName}
-                  readOnly
-                />
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              className="btn w-full bg-amber-700 hover:bg-amber-800 border-none text-white"
-            >
-              Add Book
-            </button>
-          </form>
         </div>
       </div>
     </div>

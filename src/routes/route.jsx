@@ -9,6 +9,7 @@ import Register from "../pages/auth/Register";
 import BookDetails from "../components/BookDetails";
 import PrivateRoute from "./PrivateRoute";
 import MyBooks from "../pages/MyBooks";
+import Error from "../pages/Error";
 
 const router = createBrowserRouter([
     {
@@ -46,9 +47,14 @@ const router = createBrowserRouter([
             {
                 path: '/books-details/:id',
                 Component: BookDetails
-            }
-        ]
+            },
+            {
+        path: '*',
+        Component: Error
     }
+        ]
+    },
+    
 ])
 
 export default router

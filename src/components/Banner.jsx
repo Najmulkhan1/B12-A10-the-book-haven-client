@@ -5,7 +5,7 @@ import logo from "../assets/book.svg";
 
 const Banner = () => {
   return (
-    <div className="w-11/12 mx-auto ">
+    <div className="max-w-7xl  mx-auto ">
       <div style={{ width: "100%", height: 600, position: "relative" }}>
         <Orb
           hoverIntensity={0.5}

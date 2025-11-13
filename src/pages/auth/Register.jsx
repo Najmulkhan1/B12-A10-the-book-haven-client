@@ -1,8 +1,7 @@
 import React, { useMemo, useState } from "react";
-import { FaEye } from "react-icons/fa";
-import { FiEye, FiEyeOff } from "react-icons/fi";
+import { BsEye } from "react-icons/bs";
+import { FiEyeOff } from "react-icons/fi";
 import { Link, useLocation, useNavigate } from "react-router";
-import { AuthContext } from "../../context/AuthContext";
 import useAuth from "../../hooks/useAuth";
 import logo from "/logo.svg";
 import toast from "react-hot-toast";
@@ -16,21 +15,19 @@ const Register = () => {
   const location = useLocation();
   const navigator = useNavigate();
 
-  // simple password strength estimator
+  // stronger/consistent estimator (0..4)
   const pwStrength = useMemo(() => {
     if (!pw) return 0;
     let score = 0;
-    if (pw.length > 1) score += 1;
+    if (pw.length >= 8) score += 1;
     if (/[A-Z]/.test(pw)) score += 1;
     if (/[0-9]/.test(pw)) score += 1;
     if (/[^A-Za-z0-9]/.test(pw)) score += 1;
     return score; // 0..4
   }, [pw]);
 
-
   const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z]).{6,}$/;
 
-  // color for strength bar
   const strengthColor = [
     "bg-red-400",
     "bg-orange-400",
@@ -43,104 +40,148 @@ const Register = () => {
   const googleSignUp = () => {
     googleSignIn()
       .then((result) => {
-        console.log(result.user);
         toast.success("Successfully Logged!");
         navigator(location.state || "/");
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
         toast.error("Invalid-credential");
       });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.target;
-    const name = form.name.value;
-    const url = form.url.value;
-    const email = form.email.value;
+    const name = form.name.value.trim();
+    const url = form.url.value.trim();
+    const email = form.email.value.trim();
     const password = form.password.value;
 
-    
     if (!passwordRegex.test(password)) {
       toast.error(
         "Password must have at least one uppercase, one lowercase letter, and be 6+ characters long."
       );
       return;
-    } else {
-      toast.success("✅ Password is valid!");
     }
 
-    createUser(email, password).then((result) => {
+    try {
+      const result = await createUser(email, password);
       const user = result.user;
-      updateUser({
-        displayName: name,
-        photoURL: url,
-      })
-        .then(() => {
-          setUser({ ...user, displayName: name, photoURL: url });
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    });
-    toast.success("Successfully Logged!");
-    navigator(location.state || "/").catch((error) => {
-      console.log(error);
-      toast.error("Invalid-credential");
-    });
+      // update profile if updateUser is available
+      if (typeof updateUser === "function") {
+        try {
+          await updateUser({ displayName: name, photoURL: url });
+          if (typeof setUser === "function") {
+            setUser({ ...user, displayName: name, photoURL: url });
+          }
+        } catch (err) {
+          console.error("updateUser error:", err);
+        }
+      }
+
+      toast.success("Successfully Registered!");
+      navigator(location.state || "/");
+    } catch (err) {
+      console.error(err);
+      toast.error("Registration failed");
+    }
   };
 
   const handleTogglePasswordShow = (e) => {
     e.preventDefault();
-    setShow(!show);
+    setShow((s) => !s);
   };
 
   return (
-    <div>
-      <div className="min-h-screen flex items-stretch rounded-sm">
-        {/* Left illustration / brand panel (hidden on small screens) */}
+    <div className="min-h-screen bg-base-200">
+      <div className="flex items-stretch rounded-sm">
+        {/* Right/Left decorative blobs like Login */}
+        <svg
+          className="absolute -right-114 top-120 w-[650px] h-[650px] opacity-25 blur-xl transition-all duration-500"
+          viewBox="0 0 600 600"
+          aria-hidden
+        >
+          <defs>
+            <linearGradient id="gA" x1="0" x2="1">
+              <stop offset="0%" stopColor="#bbf7d0" />
+              <stop offset="100%" stopColor="#d1fae5" />
+            </linearGradient>
+          </defs>
+          <path
+            fill="url(#gA)"
+            d="M421,325Q371,400,306,435Q241,470,176,428Q111,386,74,330Q37,274,83,217Q129,160,204,124Q279,88,335,130Q391,172,429,238Q467,304,421,325Z"
+          />
+        </svg>
 
         <aside className="hidden lg:flex lg:w-1/2 items-center justify-center relative overflow-hidden">
-          {/* Illustration card */}
-          <div className="relative max-w-md p-10 rounded-3xl shadow-2xl bg-[#fffbeb]/60 backdrop-blur-sm border border-white/40">
-            <h2 className="text-3xl font-extrabold text-gray-900 mb-4">
-              Welcome to The book haven
+          <svg
+            className="absolute -left-32 -top-28 w-[650px] h-[650px] opacity-25 blur-xl transition-all duration-500 "
+            viewBox="0 0 600 600"
+            aria-hidden
+          >
+            <defs>
+              <linearGradient id="gB" x1="0" x2="1">
+                <stop offset="0%" stopColor="#bbf7d0" />
+                <stop offset="100%" stopColor="#d1fae5" />
+              </linearGradient>
+            </defs>
+            <path
+              fill="url(#gB)"
+              d="M421,325Q371,400,306,435Q241,470,176,428Q111,386,74,330Q37,274,83,217Q129,160,204,124Q279,88,335,130Q391,172,429,238Q467,304,421,325Z"
+            />
+          </svg>
+
+          <svg
+            className="absolute -right-32 -button-28 w-[650px] h-[650px] opacity-25 blur-xl transition-all duration-500"
+            viewBox="0 0 600 600"
+            aria-hidden
+          >
+            <defs>
+              <linearGradient id="gC" x1="0" x2="1">
+                <stop offset="0%" stopColor="#bbf7d0" />
+                <stop offset="100%" stopColor="#d1fae5" />
+              </linearGradient>
+            </defs>
+            <path
+              fill="url(#gC)"
+              d="M421,325Q371,400,306,435Q241,470,176,428Q111,386,74,330Q37,274,83,217Q129,160,204,124Q279,88,335,130Q391,172,429,238Q467,304,421,325Z"
+            />
+          </svg>
+
+          <div className="relative max-w-md p-10 rounded-3xl shadow-2xl bg-base-100/60 backdrop-blur-sm border border-base-300/40">
+            <h2 className=" text-center text-3xl font-extrabold text-base-content mb-4">
+              Welcome to The Book Haven
             </h2>
-            <p className="text-gray-700 mb-6">
+            <p className="text-base-content/80 mb-6">
               Discover stories, knowledge, and inspiration from anywhere.
-              Explore curated collections, insightful reviews, and hands-on
-              reading challenges designed to spark your love for books. Join
-              thousands of readers building brighter minds and richer
-              imaginations.
+              Explore curated collections and join a community of readers.
             </p>
 
-            {/* small highlights */}
-            <div className="flex gap-3">
+            <div className="flex gap-4">
               <div className="flex items-center gap-3">
-                <div className=" p-2 rounded-lg bg-white shadow flex items-center justify-center text-emerald-600 font-bold">
+                <div className="p-2 rounded-lg bg-base-200 shadow-md flex items-center justify-center text-success font-bold">
                   24k
                 </div>
                 <div>
-                  <div className="text-sm text-gray-600 font-semibold">
+                  <div className="text-sm text-base-content font-semibold">
                     Readers
                   </div>
-                  <div className="text-xs text-gray-500">
-                    A trusted community of book lovers
+                  <div className="text-xs text-base-content/60">
+                    A trusted book-loving community
                   </div>
                 </div>
               </div>
 
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-white shadow flex items-center justify-center text-emerald-600 font-bold">
+                <div className="p-2 rounded-lg bg-base-200 shadow-md flex items-center justify-center text-success font-bold">
                   1.2k
                 </div>
                 <div>
-                  <div className="text-sm text-gray-600  font-semibold">
+                  <div className="text-sm text-base-content font-semibold">
                     Collections
                   </div>
-                  <div className="text-xs text-gray-500">
-                    Curated, practical, and immersive reading experiences{" "}
+                  <div className="text-xs text-base-content/60">
+                    Curated reading experiences
                   </div>
                 </div>
               </div>
@@ -148,20 +189,17 @@ const Register = () => {
           </div>
         </aside>
 
-        {/* Right: Auth form panel */}
         <main className="flex-1 flex items-center justify-center p-6 lg:p-12">
           <div className="w-full max-w-xl">
-            {/* Floating glass card */}
-            <div className="relative bg-[#fffbeb]/70 bacbackdrop-blur-sm border border-white/40 rounded-3xl p-8 md:p-10 shadow-xl overflow-visible">
-              {/* top-brand / small nav */}
+            <div className="relative bg-base-100/70 backdrop-blur-sm border border-base-300/40 rounded-3xl p-8 md:p-10 shadow-xl overflow-visible">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-lg flex items-center justify-center font-bold">
-                    <img src={logo} alt="" />
+                  <div className="h-10 w-10">
+                    <img src={logo} alt="Logo" />
                   </div>
                   <div>
-                    <div className="text-sm text-gray-500">Welcome to</div>
-                    <div className="font-semibold text-slate-900">
+                    <div className="text-sm text-base-content/60">Welcome to</div>
+                    <div className="font-semibold text-base-content">
                       The Book Haven
                     </div>
                   </div>
@@ -169,28 +207,29 @@ const Register = () => {
                 <div className="hidden sm:flex gap-3 items-center">
                   <Link
                     to="/"
-                    className="text-sm text-gray-600 hover:text-emerald-600"
+                    className="text-sm text-base-content/80 hover:text-primary"
                   >
                     Home
                   </Link>
                   <Link
-                    to="/signup"
-                    className="text-sm text-gray-600 hover:text-emerald-600"
+                    to="/login"
+                    className="text-sm text-base-content/80 hover:text-primary"
                   >
-                    Sign up
+                    Sign in
                   </Link>
                 </div>
               </div>
 
-              <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 mb-4">
-                Create account <br />
+              <h1 className="text-2xl md:text-3xl font-extrabold text-base-content mb-4">
+                Create account
+                <br />
                 Start your journey
               </h1>
 
               <div className=" mb-5">
                 <button
-                  onClick={() => googleSignUp()}
-                  className="btn bg-white w-full shadow-none hover:border-green-500  text-black border-[#e5e5e5]"
+                  onClick={googleSignUp}
+                  className="btn btn-outline w-full hover:bg-base-200 text-base-content"
                 >
                   <svg
                     aria-label="Google logo"
@@ -225,130 +264,119 @@ const Register = () => {
 
               <form onSubmit={handleSubmit}>
                 {/* name */}
-                <div className="mb-4">
-                  <label htmlFor="" className="font-semibold text-black block">
-                    Name
-                  </label>
-                  <input
-                    className="border border-gray-200 w-full px-2 py-2 rounded-sm focus:ring-2 focus:border-none text-black  ring-emerald-200"
-                    type="text"
-                    name="name"
-                    placeholder="Enter your name"
-                  />
-                </div>
+                <label htmlFor="name" className="text-base-content font-semibold block">
+                  Name
+                </label>
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  placeholder="Enter your name"
+                  className="input input-bordered w-full my-2 text-base-content"
+                />
 
-                {/* Image url */}
-                <div className="mb-4">
-                  <label htmlFor="" className="block text-black font-semibold">
-                    Image Url
-                  </label>
-                  <input
-                    type="url"
-                    name="url"
-                    placeholder="Enter your image url"
-                    className="border text-black border-gray-200 w-full py-2 px-2 rounded-sm focus:border-none focus:ring-2 ring-emerald-200"
-                  />
-                </div>
+                {/* image url */}
+                <label htmlFor="url" className="text-base-content font-semibold block mt-3">
+                  Image URL
+                </label>
+                <input
+                  id="url"
+                  name="url"
+                  type="url"
+                  placeholder="Enter your image url"
+                  className="input input-bordered w-full my-2 text-base-content"
+                />
 
                 {/* email */}
-                <div className="relative mb-4">
-                  <label htmlFor="" className="block font-semibold text-black">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    className="border border-gray-200 w-full py-2 px-2 rounded-sm focus:ring-2 focus:outline-none ring-emerald-200 focus:border-none text-black"
-                    placeholder="Enter your email"
-                  />
-                </div>
+                <label htmlFor="email" className="text-base-content font-semibold block mt-3">
+                  Email
+                </label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="Enter your email"
+                  className="input input-bordered w-full my-2 text-base-content"
+                />
 
                 {/* password */}
-                <div className="relative mb-4">
-                  <label htmlFor="" className="font-semibold text-black block">
+                <div className="relative mt-3 mb-3">
+                  <label htmlFor="password" className="text-base-content font-semibold block">
                     Password
                   </label>
                   <input
-                    className="border border-gray-200 w-full py-2 px-2 rounded-sm text-black ring-emerald-200 focus:ring-2 focus:border-none"
+                    id="password"
+                    name="password"
                     value={pw}
                     onChange={(e) => setPw(e.target.value)}
                     type={show ? "text" : "password"}
-                    name="password"
                     placeholder="Enter your password"
+                    className="input input-bordered w-full my-2 text-base-content"
                   />
                   <button
-                    onClick={handleTogglePasswordShow}
-                    className="absolute right-2 bottom-2.5 cursor-pointer text-black"
+                    type="button"
+                    onClick={() => setShow((s) => !s)}
+                    className="text-base-content absolute right-4 bottom-5"
                   >
-                    {show ? (
-                      <FiEye className="text-emerald-400" />
-                    ) : (
-                      <FiEyeOff className="text-emerald-400" />
-                    )}
+                    {show ? <BsEye className="text-primary" /> : <FiEyeOff className="text-primary" />}
                   </button>
                 </div>
 
-                {/* strength */}
+                {/* strength bar */}
                 <div className="flex items-center justify-between mb-4">
-                  <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden mr-3">
+                  <div className="flex-1 h-2 bg-base-300 rounded-full overflow-hidden mr-3">
                     <div
                       className={`h-full rounded-full transition-all ${
-                        pwStrength > 0
-                          ? strengthColor[Math.max(0, pwStrength)]
-                          : "bg-gray-200"
+                        pwStrength > 0 ? strengthColor[Math.max(0, pwStrength - 1)] : "bg-base-300"
                       }`}
                       style={{ width: `${(pwStrength / 4) * 100}%` }}
                       aria-hidden
                     />
                   </div>
-                  <div className="text-xs text-gray-500 min-w-[80px] text-right">
+                  <div className="text-xs text-base-content/60 min-w-[80px] text-right">
                     {strengthLabel[pwStrength]}
                   </div>
                 </div>
 
                 <div className="flex items-center justify-between mb-6">
-                  <label className="inline-flex items-center gap-2 text-sm text-gray-600">
+                  <label className="inline-flex items-center gap-2 text-sm text-base-content/80">
                     <input
                       type="checkbox"
                       checked={remember}
                       onChange={() => setRemember((r) => !r)}
-                      className="w-4 h-4 rounded border-gray-300"
+                      className="checkbox checkbox-sm checkbox-primary"
                     />
                     Remember me
                   </label>
 
-                  <Link
-                    to="/forgot"
-                    className="text-sm text-emerald-600 hover:underline"
-                  >
+                  <Link to="/forgot" className="text-primary text-sm hover:underline">
                     Forgot password?
                   </Link>
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold transition-shadow shadow"
+                  className="btn bg-amber-600 text-white hover:bg-amber-700 w-full shadow-lg"
                 >
-                  Sign in
+                  Sign up
                 </button>
 
-                <p className="text-center text-sm text-gray-500 mt-4">
-                  Already member?{" "}
-                  <Link to="/login" className="text-emerald-600 font-medium">
+                <p className="text-center text-sm text-base-content/60 mt-4">
+                  Already a member?{" "}
+                  <Link to="/login" className="text-primary font-medium hover:underline">
                     Sign in
                   </Link>
                 </p>
               </form>
             </div>
 
-            {/* footer micro info */}
-            <div className="mt-6 text-center text-xs text-gray-400">
+            <div className="mt-6 text-center text-xs text-base-content/40">
               By signing in you agree to our{" "}
-              <Link to="/terms" className="underline">
+              <Link to="/terms" className="link link-hover text-base-content/60">
                 Terms
               </Link>{" "}
               and{" "}
-              <Link to="/privacy" className="underline">
+              <Link to="/privacy" className="link link-hover text-base-content/60">
                 Privacy
               </Link>
               .
@@ -356,10 +384,10 @@ const Register = () => {
           </div>
         </main>
 
-        {/* Mobile-only quick footer bar */}
-        <div className="lg:hidden fixed bottom-4 left-1/2 -translate-x-1/2 w-[92%] bg-white/80 backdrop-blur rounded-xl p-3 shadow-md flex items-center justify-between">
-          <div className="text-sm text-gray-700">Already member?</div>
-          <Link to="/signup" className="text-emerald-600 font-medium">
+        {/* Mobile quick footer like Login */}
+        <div className="lg:hidden fixed bottom-4 left-1/2 -translate-x-1/2 w-[92%] bg-base-100/80 backdrop-blur rounded-xl p-3 shadow-md flex items-center justify-between">
+          <div className="text-sm text-base-content/80">Already member?</div>
+          <Link to="/login" className="text-primary font-medium hover:underline">
             Sign in
           </Link>
         </div>

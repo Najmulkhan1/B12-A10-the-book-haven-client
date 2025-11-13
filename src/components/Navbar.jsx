@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link, NavLink } from "react-router";
 import logo from "../assets/logo3.svg";
 import useAuth from "../hooks/useAuth";
@@ -9,21 +9,7 @@ const Navbar = () => {
   const [open, setOpen] = useState(false);
 
   const { user, logOut } = useAuth();
-  //   const [isMobile, setIsMobile] = useState(false);
-  //   const [showTooltip, setShowTooltip] = useState(false);
-
-  //   useEffect(() => {
-  //     const checkMobile = () => setIsMobile(window.innerWidth <= 768);
-  //     checkMobile();
-  //     window.addEventListener("resize", checkMobile);
-  //     return () => window.removeEventListener("resize", checkMobile);
-  //   }, []);
-
-  //   const handleTooltipClick = () => {
-  //     if (isMobile) {
-  //       setShowTooltip(!showTooltip);
-  //     }
-  //   };
+  
 
   const navItems = [
     { to: "/", label: "Home" },
@@ -41,7 +27,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="w-11/12 mx-auto mt-2">
+    <div className="max-w-7xl mx-auto  mt-2">
       <header className=" rounded-full bg-transparent shadow-sm sticky top-0 z-50 overflow-visible">
         <div className=" px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">

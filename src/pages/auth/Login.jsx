@@ -2,10 +2,9 @@ import React, { use, useMemo, useState } from "react";
 import { BsEye } from "react-icons/bs";
 import { FiEyeOff } from "react-icons/fi";
 import { Link, useLocation, useNavigate } from "react-router";
-import { AuthContext } from "../../context/AuthContext";
 import toast from "react-hot-toast";
 import logo from "/logo.svg";
-// import useAuth from "../../hooks/useAuth";
+import { AuthContext } from "../../context/AuthContext";
 
 const Login = () => {
   const [pw, setPw] = useState("");
@@ -13,11 +12,9 @@ const Login = () => {
   const [remember, setRemember] = useState(false);
   const location = useLocation();
 
-  //   const { userLogin } = useAuth();
   const { signInUser, googleSignIn } = use(AuthContext);
   const navigator = useNavigate();
 
-  // simple password strength estimator
   const pwStrength = useMemo(() => {
     if (!pw) return 0;
     let score = 0;
@@ -28,7 +25,6 @@ const Login = () => {
     return score; // 0..4
   }, [pw]);
 
-  // color for strength bar
   const strengthColor = [
     "bg-red-400",
     "bg-orange-400",
@@ -48,7 +44,6 @@ const Login = () => {
     signInUser(email, password)
       .then(() => {
         toast.success("Successfully Logged!");
-
         navigator(location.state || "/");
       })
       .catch((error) => {
@@ -60,7 +55,6 @@ const Login = () => {
   const handleGoogleSignIn = () => {
     googleSignIn()
       .then(() => {
-        // console.log(result.user);
         toast.success("Successfully Logged!");
         navigator(location.state || "/");
       })
@@ -71,40 +65,41 @@ const Login = () => {
   };
 
   return (
-    <div>
-      <div className=" flex items-stretch  rounded-sm">
-        {/* Left illustration / brand panel (hidden on small screens) */}
+    <div className="min-h-screen bg-base-200"> 
+      <div className="flex items-stretch rounded-sm">
+        
         <svg
-            className="absolute -right-114 top-120 w-[650px] h-[650px] opacity-25 blur-xl transition-all duration-500"
-            viewBox="0 0 600 600"
-            aria-hidden
-          >
-            <defs>
-              <linearGradient id="gA" x1="0" x2="1">
-                <stop offset="0%" stopColor="#bbf7d0" />
-                <stop offset="100%" stopColor="#d1fae5" />
-              </linearGradient>
-            </defs>
-            <path
-              fill="url(#gA)"
-              d="M421,325Q371,400,306,435Q241,470,176,428Q111,386,74,330Q37,274,83,217Q129,160,204,124Q279,88,335,130Q391,172,429,238Q467,304,421,325Z"
-            />
-          </svg>
+          className="absolute -right-114 top-120 w-[650px] h-[650px] opacity-25 blur-xl transition-all duration-500"
+          viewBox="0 0 600 600"
+          aria-hidden
+        >
+          <defs>
+            <linearGradient id="gA" x1="0" x2="1">
+              <stop offset="0%" stopColor="#bbf7d0" />
+              <stop offset="100%" stopColor="#d1fae5" />
+            </linearGradient>
+          </defs>
+          <path
+            fill="url(#gA)"
+            d="M421,325Q371,400,306,435Q241,470,176,428Q111,386,74,330Q37,274,83,217Q129,160,204,124Q279,88,335,130Q391,172,429,238Q467,304,421,325Z"
+          />
+        </svg>
+
         <aside className="hidden lg:flex lg:w-1/2 items-center justify-center relative overflow-hidden">
-          {/* large animated blob */}
+          
           <svg
             className="absolute -left-32 -top-28 w-[650px] h-[650px] opacity-25 blur-xl transition-all duration-500 "
             viewBox="0 0 600 600"
             aria-hidden
           >
             <defs>
-              <linearGradient id="gA" x1="0" x2="1">
+              <linearGradient id="gB" x1="0" x2="1"> 
                 <stop offset="0%" stopColor="#bbf7d0" />
                 <stop offset="100%" stopColor="#d1fae5" />
               </linearGradient>
             </defs>
             <path
-              fill="url(#gA)"
+              fill="url(#gB)"
               d="M421,325Q371,400,306,435Q241,470,176,428Q111,386,74,330Q37,274,83,217Q129,160,204,124Q279,88,335,130Q391,172,429,238Q467,304,421,325Z"
             />
           </svg>
@@ -114,20 +109,20 @@ const Login = () => {
             aria-hidden
           >
             <defs>
-              <linearGradient id="gA" x1="0" x2="1">
+              <linearGradient id="gC" x1="0" x2="1"> 
                 <stop offset="0%" stopColor="#bbf7d0" />
                 <stop offset="100%" stopColor="#d1fae5" />
               </linearGradient>
             </defs>
             <path
-              fill="url(#gA)"
+              fill="url(#gC)"
               d="M421,325Q371,400,306,435Q241,470,176,428Q111,386,74,330Q37,274,83,217Q129,160,204,124Q279,88,335,130Q391,172,429,238Q467,304,421,325Z"
             />
           </svg>
 
-          {/* subtle dashed accent */}
+          
           <svg
-            className="absolute left-14 top-24 w-40 h-40 text-yellow-300 opacity-50"
+            className="absolute left-14 top-24 w-40 h-40 text-warning opacity-50" 
             viewBox="0 0 40 40"
             fill="none"
             aria-hidden
@@ -141,41 +136,43 @@ const Login = () => {
             />
           </svg>
 
-          {/* Illustration card */}
-          <div className="relative max-w-md p-10 rounded-3xl shadow-2xl bg-[#fffbeb]/60 backdrop-blur-sm border border-white/40">
-            <h2 className=" text-center text-3xl font-extrabold text-gray-900 mb-4">
+          
+          <div className="relative max-w-md p-10 rounded-3xl shadow-2xl bg-base-100/60 backdrop-blur-sm border border-base-300/40">
+            <h2 className=" text-center text-3xl font-extrabold text-base-content mb-4">
               Welcome back to The Book Haven
             </h2>
-            <p className="text-gray-700 mb-6">
+            <p className="text-base-content/80 mb-6">
               Your books. Your knowledge. Log in to continue your reading
               journey.
             </p>
 
-            {/* small highlights */}
+           
             <div className="flex gap-4">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-white shadow flex items-center justify-center text-emerald-600 font-bold">
+                
+                <div className="p-2 rounded-lg bg-base-200 shadow-md flex items-center justify-center text-success font-bold">
                   24k
                 </div>
                 <div>
-                  <div className="text-sm text-gray-600 font-semibold">
+                  <div className="text-sm text-base-content font-semibold">
                     Readers
                   </div>
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs text-base-content/60">
                     A trusted book-loving community
                   </div>
                 </div>
               </div>
 
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-white shadow flex items-center justify-center text-emerald-600 font-bold">
+                
+                <div className="p-2 rounded-lg bg-base-200 shadow-md flex items-center justify-center text-success font-bold">
                   1.2k
                 </div>
                 <div>
-                  <div className="text-sm text-gray-600 font-semibold">
+                  <div className="text-sm text-base-content font-semibold">
                     Collections
                   </div>
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs text-base-content/60">
                     Curated and practical reading experiences
                   </div>
                 </div>
@@ -184,20 +181,20 @@ const Login = () => {
           </div>
         </aside>
 
-        {/* Right: Auth form panel */}
+        
         <main className="flex-1 flex items-center justify-center p-6 lg:p-12">
           <div className="w-full max-w-xl">
-            {/* Floating glass card */}
-            <div className="relative bg-[#fffbeb]/70 backdrop-blur-sm border border-white/40 rounded-3xl p-8 md:p-10 shadow-xl overflow-visible">
-              {/* top-brand / small nav */}
+            
+            <div className="relative bg-base-100/70 backdrop-blur-sm border border-base-300/40 rounded-3xl p-8 md:p-10 shadow-xl overflow-visible">
+             
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10 ">
-                    <img src={logo} alt="" />
+                    <img src={logo} alt="Logo" />
                   </div>
                   <div>
-                    <div className="text-sm text-gray-500">Welcome back to</div>
-                    <div className="font-semibold text-slate-900">
+                    <div className="text-sm text-base-content/60">Welcome back to</div>
+                    <div className="font-semibold text-base-content">
                       The Book Haven
                     </div>
                   </div>
@@ -205,27 +202,28 @@ const Login = () => {
                 <div className="hidden sm:flex gap-3 items-center">
                   <Link
                     to="/"
-                    className="text-sm text-gray-600 hover:text-emerald-600"
+                    className="text-sm text-base-content/80 hover:text-primary" 
                   >
                     Home
                   </Link>
                   <Link
                     to="/signup"
-                    className="text-sm text-gray-600 hover:text-emerald-600"
+                    className="text-sm text-base-content/80 hover:text-primary" 
                   >
                     Sign up
                   </Link>
                 </div>
               </div>
 
-              <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 mb-4">
+              <h1 className="text-2xl md:text-3xl font-extrabold text-base-content mb-4">
                 Sign in to your account
               </h1>
 
               <div className=" mb-5">
                 <button
                   onClick={() => handleGoogleSignIn()}
-                  className="btn bg-white w-full shadow-none hover:border-green-500  text-black border-[#e5e5e5]"
+                  
+                  className="btn btn-outline w-full hover:bg-base-200 text-base-content"
                 >
                   <svg
                     aria-label="Google logo"
@@ -259,85 +257,85 @@ const Login = () => {
               </div>
 
               <form onSubmit={handleLoginSubmit} Validate>
-                {/* social buttons */}
-
-                {/* separator */}
+                
                 <div className="flex items-center gap-3 my-4">
-                  <div className="flex-1 h-px bg-gray-200" />
-                  <div className="text-xs text-gray-400">
-                    or continue with email
+                  <div className="flex-1 h-px bg-base-300" /> 
+                  <div className="text-xs text-base-content/60">
                   </div>
-                  <div className="flex-1 h-px bg-gray-200" />
+                  <div className="flex-1 h-px bg-base-300" /> 
                 </div>
 
-                {/* email field (animated label) */}
-                <label htmlFor="" className="text-black font-semibold block">
+                {/* email field */}
+                <label htmlFor="email" className="text-base-content font-semibold block"> 
                   Email
                 </label>
                 <input
                   type="email"
                   name="email"
-                  className="border border-gray-300 rounded-sm w-full py-2 px-2 text-black focus:border-green-500"
+                 
+                  className="input input-bordered w-full my-2 text-base-content"
                   placeholder="Enter your email"
                 />
 
                 {/* password field */}
                 <div className="relative mt-3 mb-3">
-                  <label htmlFor="" className="text-black font-semibold block">
+                  <label htmlFor="password" className="text-base-content font-semibold block">
                     Password
                   </label>
                   <input
+                    id="password" 
                     value={pw}
                     onChange={(e) => setPw(e.target.value)}
                     type={show ? "text" : "password"}
                     name="password"
-                    className="border border-gray-300 py-2 px-2 rounded-sm w-full text-black"
+                    className="input input-bordered w-full my-2 text-base-content"
                     placeholder="Enter your password"
                   />
                   <button
+                    type="button" 
                     onClick={() => setShow(!show)}
-                    className="text-black absolute right-2 bottom-2.5"
+                    className="text-base-content absolute right-4 bottom-5"
                   >
                     {show ? (
-                      <BsEye className="text-emerald-600" />
+                      <BsEye className="text-primary" /> 
                     ) : (
-                      <FiEyeOff className="text-emerald-600" />
+                      <FiEyeOff className="text-primary" /> 
                     )}
                   </button>
                 </div>
 
-                {/* password strength */}
+                {/* password strength colors */}
                 <div className="flex items-center justify-between mb-4">
-                  <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden mr-3">
+                  <div className="flex-1 h-2 bg-base-300 rounded-full overflow-hidden mr-3"> 
                     <div
                       className={`h-full rounded-full transition-all ${
                         pwStrength > 0
                           ? strengthColor[Math.max(0, pwStrength - 1)]
-                          : "bg-gray-200"
+                          : "bg-base-300"
                       }`}
                       style={{ width: `${(pwStrength / 4) * 100}%` }}
                       aria-hidden
                     />
                   </div>
-                  <div className="text-xs text-gray-500  min-w-[80px] text-right">
+                  <div className="text-xs text-base-content/60 min-w-[80px] text-right"> 
                     {strengthLabel[pwStrength]}
                   </div>
                 </div>
 
                 <div className="flex items-center justify-between mb-6">
-                  <label className="inline-flex items-center gap-2 text-sm text-gray-600">
+                  <label className="inline-flex items-center gap-2 text-sm text-base-content/80"> 
                     <input
                       type="checkbox"
                       checked={remember}
                       onChange={() => setRemember((r) => !r)}
-                      className="w-4 h-4 rounded shadow checkbox text-black "
+                      className="checkbox checkbox-sm checkbox-primary" 
                     />
                     Remember me
                   </label>
 
                   <Link
                     to="#"
-                    className="text-sm text-emerald-600 hover:underline"
+                    className="text-primary text-sm hover:underline" 
                   >
                     Forgot password?
                   </Link>
@@ -345,14 +343,15 @@ const Login = () => {
 
                 <button
                   type="submit"
-                  className="w-full py-3 rounded-xl cursor-pointer bg-amber-700 hover:bg-amber-800 text-white font-semibold transition-shadow shadow"
+                 
+                  className="btn bg-amber-600 text-white hover:bg-amber-700 w-full shadow-lg"
                 >
                   Login
                 </button>
 
-                <p className="text-center text-sm text-gray-500 mt-4">
+                <p className="text-center text-sm text-base-content/60 mt-4"> 
                   Don&apos;t have an account?{" "}
-                  <Link to="/register" className="text-emerald-600 font-medium">
+                  <Link to="/register" className="text-primary font-medium hover:underline"> 
                     Create one
                   </Link>
                 </p>
@@ -360,13 +359,13 @@ const Login = () => {
             </div>
 
             {/* footer micro info */}
-            <div className="mt-6 text-center text-xs text-gray-400">
+            <div className="mt-6 text-center text-xs text-base-content/40"> 
               By signing in you agree to our{" "}
-              <Link to="/terms" className="underline">
+              <Link to="/terms" className="link link-hover text-base-content/60"> 
                 Terms
               </Link>{" "}
               and{" "}
-              <Link to="/privacy" className="underline">
+              <Link to="/privacy" className="link link-hover text-base-content/60"> 
                 Privacy
               </Link>
               .
@@ -375,9 +374,9 @@ const Login = () => {
         </main>
 
         {/* Mobile-only quick footer bar */}
-        <div className="lg:hidden fixed bottom-4 left-1/2 -translate-x-1/2 w-[92%] bg-white/80 backdrop-blur rounded-xl p-3 shadow-md flex items-center justify-between">
-          <div className="text-sm text-gray-700">New here?</div>
-          <Link to="/signup" className="text-emerald-600 font-medium">
+        <div className="lg:hidden fixed bottom-4 left-1/2 -translate-x-1/2 w-[92%] bg-base-100/80 backdrop-blur rounded-xl p-3 shadow-md flex items-center justify-between"> {/* Used bg-base-100 */}
+          <div className="text-sm text-base-content/80">New here?</div>
+          <Link to="/signup" className="text-primary font-medium hover:underline"> 
             Create an account
           </Link>
         </div>
