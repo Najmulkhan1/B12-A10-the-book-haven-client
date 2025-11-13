@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router";
+import { useParams } from "react-router";
 import useAxios from "../hooks/useAxios";
-import { ListStart } from "lucide-react";
-import Review from "./Review";
+
 import useAuth from "../hooks/useAuth";
 import toast from "react-hot-toast";
 import Stars from "./Stars";
@@ -191,30 +190,22 @@ const BookDetails = () => {
   return (
     <div className="w-11/12 mx-auto mt-4">
       <div className="grid gird-cols-1 md:grid-cols-2 gap-5">
-        <div className="rounded-lg">
-          <img className="w-164 h-96 object-cover rounded-lg shadow-lg" src={book.bookImage} alt="" />
+        <div className="max-w-100 max-h-166 rounded-lg  ">
+          <img
+            className=" h-full w-full object-cover rounded-lg shadow-lg"
+            src={book.bookImage}
+            alt=""
+          />
         </div>
         <div className="relative">
           <h1 className="text-4xl font-semibold">{book.title}</h1>
           <p>by | {book.author}</p>
           <hr className="border-gray-200 shadow my-2" />
           <div className="flex items-center gap-2">
-           
-
-            <div className="rating rating-sm">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <input
-                  key={i}
-                  type="radio"
-                  name="rating-2"
-                  className="mask mask-star-2 bg-orange-400"
-                  aria-label={`${i + 1} star`}
-                  checked={book.rating === i + 1} // highlight exactly that star
-                  readOnly
-                />
-              ))}
+            <div className="flex items-center gap-1">
+              <Stars value={book.rating} />
             </div>
-             <div className="text-center">{book.rating}/5 </div>
+            
           </div>
 
           <button className="absolute top-3 right-2 bg-amber-200 py-1 px-3 rounded-full border font-semibold text-black border-amber-300">

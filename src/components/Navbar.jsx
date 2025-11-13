@@ -222,7 +222,7 @@ const Navbar = () => {
         {/* Mobile Menu */}
 
         <div
-          className={`absolute right-0 w-1/2 rounded sm:hidden ${
+          className={`absolute right-0 w-1/2 rounded md:hidden ${
             open ? "block" : "hidden"
           } bg-amber-100 border-t border-gray-200`}
         >
