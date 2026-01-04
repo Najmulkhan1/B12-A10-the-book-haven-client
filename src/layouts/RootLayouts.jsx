@@ -7,11 +7,14 @@ import { Toaster } from 'react-hot-toast'
 const RootLayouts = () => {
   return (
     <div>
-        <Navbar/>
+      <Navbar />
+      <main className='mt-0'>
         <Outlet></Outlet>
-        <Footer></Footer>
+      </main>
 
-        <Toaster />
+      <Footer></Footer>
+
+      <Toaster />
     </div>
   )
 }

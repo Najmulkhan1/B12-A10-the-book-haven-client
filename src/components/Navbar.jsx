@@ -4,39 +4,54 @@ import logo from "../assets/logo3.svg";
 import useAuth from "../hooks/useAuth";
 import { Tooltip } from "react-tooltip";
 import Switch from "./Switch";
-import { Settings } from "lucide-react";
 import { BsPersonFillGear } from "react-icons/bs";
+import { Settings, LogOut } from "lucide-react";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
-
   const { user, logOut } = useAuth();
-  
-
-  const navItems = [
-    { to: "/", label: "Home" },
-    { to: "/all-books", label: "All Books" },
-    { to: "/add-book", label: "Add Book" },
-    { to: "/my-books", label: "My Books" },
-  ];
 
   const handleLogout = () => {
     logOut()
-      .then(() => {})
+      .then(() => { })
       .catch((error) => {
         console.log(error);
       });
   };
 
+  // Public links (Visible to everyone or just guests?)
+  // Requirement: Logged-out: minimum 3 routes.
+  const publicLinks = [
+    { to: "/", label: "Home" },
+    { to: "/all-books", label: "All Books" },
+    { to: "/about", label: "About" },
+  ];
+
+  // Protected links (Visible only to logged-in users)
+  // Requirement: Logged-in: minimum 5 routes.
+  // We combine public + protected for users, or just use a specific set.
+  // Let's combine: Home, All Books, Add Book, My Books, About (Optional)
+  const protectedLinks = [
+    { to: "/add-book", label: "Add Book" },
+    { to: "/my-books", label: "My Books" },
+  ];
+
+  // Final list based on auth
+  const navItems = user
+    ? [...publicLinks.filter(l => l.to !== "/about"), ...protectedLinks, { to: "/about", label: "About" }] // 3 + 2 = 5 routes.
+    : publicLinks; // 3 routes.
+
   return (
-    <div className="max-w-7xl mx-auto  mt-2">
-      <header className=" rounded-full bg-transparent shadow-sm sticky top-0 z-50 overflow-visible">
-        <div className=" px-4 sm:px-6 lg:px-8">
+    // Full-width sticky container. Removed max-w-7xl constraint from wrapper.
+    // Added bg-base-100/80 and backdrop-blur-md for the background effect.
+    <div className="sticky top-0 z-50 w-full bg-base-100/90 backdrop-blur-md shadow-sm transition-all duration-300">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <header className="overflow-visible">
           <div className="flex justify-between h-16 items-center">
             {/* Left: Logo */}
             <Link to="/">
               <div className="h-20 w-20 rounded-md flex items-center justify-center">
-                <img src={logo} alt="" />
+                <img src={logo} alt="Book Haven" />
               </div>
             </Link>
 
@@ -46,21 +61,16 @@ const Navbar = () => {
                 <NavLink
                   key={item.to}
                   to={item.to}
-                  // use NavLink's className callback to style text; we render SVG inside children callback
                   className={({ isActive }) =>
-                    `relative inline-flex items-center px-1 ${
-                      isActive
-                        ? "text-green-600 font-medium"
-                        : " font-medium hover:text-green-600"
+                    `relative inline-flex items-center px-1 ${isActive
+                      ? "text-green-600 font-medium"
+                      : " font-medium text-base-content hover:text-green-600"
                     }`
                   }
                 >
-                  {/* children as function to get isActive so we can show svg */}
                   {({ isActive }) => (
                     <>
                       <span className="relative z-10">{item.label}</span>
-
-                      {/* Inline SVG arc underline: only rendered when active */}
                       {isActive && (
                         <svg
                           className="absolute -bottom-2 left-1/2 -translate-x-1/2 z-0 pointer-events-none transition-opacity duration-300 ease-out"
@@ -70,12 +80,10 @@ const Navbar = () => {
                           fill="none"
                           xmlns="http://www.w3.org/2000/svg"
                           aria-hidden="true"
-                          style={{ opacity: 1, transform: "translateY(0)" }}
                         >
-                          {/* gentle arc path (adjust d, strokeWidth to taste) */}
                           <path
                             d="M2 6 Q32 14 62 6"
-                            stroke="#fbb03b" /* emerald-600 */
+                            stroke="#fbb03b"
                             strokeWidth="3"
                             strokeLinecap="round"
                             fill="none"
@@ -89,9 +97,9 @@ const Navbar = () => {
               ))}
             </nav>
 
+            {/* Right: Auth & Toggle */}
             <div className="flex justify-center items-center gap-2">
-
-                <Switch></Switch>
+              <Switch />
               {user ? (
                 <>
                   <div className="dropdown dropdown-end z-50">
@@ -102,10 +110,10 @@ const Navbar = () => {
                     >
                       <div
                         id="clickable"
-                        className="w-9 border-2 border-gray-300 rounded-full"
+                        className="w-9 border-2 border-base-300 rounded-full"
                       >
                         <img
-                          alt="Tailwind CSS Navbar component"
+                          alt="User Avatar"
                           referrerPolicy="no-referrer"
                           src={
                             user.photoURL ||
@@ -115,40 +123,37 @@ const Navbar = () => {
                         <Tooltip
                           anchorSelect="#clickable"
                           clickable
-                          className="hidden md:block"
+                          className="hidden md:block z-50"
                         >
                           <h3 className="text-lg text-amber-600 font-semibold">{user?.displayName}</h3>
-                          <Link to={'/profile'} className="flex mt-4 text-amber-600 items-center gap-3 p-2 rounded-sm border border-amber-600"><BsPersonFillGear/> My Profile</Link>
+                          <Link to={'/dashboard'} className="flex mt-4 text-amber-600 items-center gap-3 p-2 rounded-sm border border-amber-600"> Dashboard</Link>
+                          <Link to={'/dashboard/profile'} className="flex mt-2 text-amber-600 items-center gap-3 p-2 rounded-sm border border-amber-600"><BsPersonFillGear /> My Profile</Link>
                           <button
                             onClick={handleLogout}
-                            className="bg-amber-600  py-1 px-2 rounded-sm mt-3 cursor-pointer"
+                            className="bg-amber-600 w-full py-1 px-2 rounded-sm mt-3 cursor-pointer text-white flex justify-center items-center gap-2"
                           >
-                            LogOut
+                            <LogOut size={16} /> LogOut
                           </button>
                         </Tooltip>
                       </div>
-
-                      {/* <div className=" pb-3 border-b border-b-gray-200">
-                <li className="text-sm font-bold">{user.displayName}</li>
-                <li className="text-xs">{user.email}</li>
-              </div> */}
                     </div>
 
+                    {/* Mobile/Tablet Dropdown Fallback */}
                     <ul
                       tabIndex="-1"
-                      className="menu md:hidden  menu-sm dropdown-content bg-base-100 rounded-box z-50 mt-3 w-52 p-2 shadow"
+                      className="menu md:hidden menu-sm dropdown-content bg-base-100 rounded-box z-50 mt-3 w-52 p-2 shadow"
                     >
-                      <div className=" pb-3 border-b border-b-gray-200">
-                        <li className="text-sm font-bold">
+                      <div className=" pb-3 border-b border-base-200">
+                        <li className="text-sm font-bold text-base-content">
                           {user.displayName}
                         </li>
-                        <li className="text-xs">{user.email}</li>
-                        <li><Link to={'/profile'} className="flex mt-4 text-amber-600 items-center gap-3 p-2 rounded-sm border border-amber-600"><BsPersonFillGear/> My Profile</Link></li>
+                        <li className="text-xs text-base-content/70">{user.email}</li>
+                        <li><Link to={'/dashboard'} className="flex mt-2 text-amber-600 items-center gap-3 p-2 rounded-sm border border-amber-600"> Dashboard</Link></li>
+                        <li><Link to={'/dashboard/profile'} className="flex mt-2 text-amber-600 items-center gap-3 p-2 rounded-sm border border-amber-600"><BsPersonFillGear /> My Profile</Link></li>
 
                         <li className="pt-3">
                           <button
                             type="button"
-                            // Use onClickCapture to ensure it fires before menu closes
                             onClickCapture={(e) => {
                               e.stopPropagation();
                               handleLogout();
@@ -175,7 +180,7 @@ const Navbar = () => {
                   <div className="inline-flex">
                     <Link
                       to={"/register"}
-                      className="btn bg-transparent border border-amber-700  hover:bg-amber-800 hover:text-white shadow none"
+                      className="btn bg-transparent border border-amber-700 hover:bg-amber-800 hover:text-white shadow none text-base-content"
                     >
                       Register
                     </Link>
@@ -187,7 +192,7 @@ const Navbar = () => {
               <div className="md:hidden inline-flex items-center justify-center gap-3">
                 <button
                   onClick={() => setOpen(!open)}
-                  className="md:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:bg-gray-100 focus:outline-none"
+                  className="md:hidden inline-flex items-center justify-center p-2 rounded-md text-base-content hover:bg-base-200 focus:outline-none"
                   aria-label="Toggle menu"
                   aria-expanded={open}
                 >
@@ -217,33 +222,31 @@ const Navbar = () => {
               </div>
             </div>
           </div>
-        </div>
+        </header>
+      </div>
 
-        {/* Mobile Menu */}
-
-        <div
-          className={`absolute right-0 w-1/2 rounded md:hidden ${
-            open ? "block" : "hidden"
-          } bg-amber-100 border-t border-gray-200`}
-        >
-          <div className="px-4 py-3 space-y-2">
-            {navItems.map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                onClick={() => setOpen(false)}
-                className={({ isActive }) =>
-                  isActive
-                    ? "block text-amber-600 font-medium bg-amber-200 px-3 py-2 rounded-md"
-                    : "block text-gray-700 hover:text-amber-700 hover:bg-amber-50 px-3 py-2 rounded-md"
-                }
-              >
-                {item.label}
-              </NavLink>
-            ))}
-          </div>
+      {/* Mobile Menu Body */}
+      <div
+        className={`absolute right-0 left-0 w-full md:hidden ${open ? "block" : "hidden"
+          } bg-base-100 border-t border-base-200 shadow-lg`}
+      >
+        <div className="px-4 py-3 space-y-2">
+          {navItems.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              onClick={() => setOpen(false)}
+              className={({ isActive }) =>
+                isActive
+                  ? "block text-amber-600 font-medium bg-amber-100/50 px-3 py-2 rounded-md"
+                  : "block text-base-content hover:text-amber-700 hover:bg-base-200 px-3 py-2 rounded-md"
+              }
+            >
+              {item.label}
+            </NavLink>
+          ))}
         </div>
-      </header>
+      </div>
     </div>
   );
 };

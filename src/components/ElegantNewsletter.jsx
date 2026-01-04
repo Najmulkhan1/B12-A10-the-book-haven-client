@@ -2,11 +2,11 @@ import React from "react";
 
 const ElegantNewsletter = () => {
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        console.log("submit done");
-        
-    }
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    console.log("submit done");
+
+  }
 
   return (
     <div>
@@ -20,11 +20,11 @@ const ElegantNewsletter = () => {
           type="email"
           placeholder="you@reader.com"
           required
-          className="flex-1 rounded-md border border-amber-200 bg-white px-3 py-2 text-sm text-amber-900 focus:outline-none focus:ring-2 focus:ring-amber-300"
+          className="flex-1 rounded-md border border-base-300 bg-base-100 px-3 py-2 text-sm text-base-content focus:outline-none focus:ring-2 focus:ring-amber-300"
         />
         <button
           type="submit"
-          className="rounded-md bg-amber-700 px-4 py-2 text-sm font-medium text-white hover:bg-amber-800"
+          className="rounded-md bg-amber-600 px-4 py-2 text-sm font-medium text-white hover:bg-amber-700"
         >
           Subscribe
         </button>

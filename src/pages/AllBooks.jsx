@@ -1,267 +1,205 @@
 import React, { useEffect, useState } from "react";
 import useAxios from "../hooks/useAxios";
-import { Search } from "lucide-react";
+import { Search, ChevronRight, ChevronLeft } from "lucide-react";
 import { Link } from "react-router";
-import Stars from "../components/Stars";
-import { ChevronRight } from "lucide-react";
-import useAuth from "../hooks/useAuth";
+
 import Loading from "../components/Loading";
+import Stars from "../components/Stars";
 
 const AllBooks = () => {
-  const {loading} = useAuth()
   const axiosInstance = useAxios();
+
+  // Data
   const [books, setBooks] = useState([]);
-  const [sort, setSort] = useState("Rating");
-  const [isDataLoading, setIsDataLoading] = useState(true)
+  const [loading, setLoading] = useState(false);
 
-  // Initial Data Fetch (Functionality preserved)
+  // Pagination
+  const [totalCount, setTotalCount] = useState(0);
+  const [booksPerPage, setBooksPerPage] = useState(6);
+  const [currentPage, setCurrentPage] = useState(0);
+
+  // Filter
+  const [sort, setSort] = useState("");
+  const [searchText, setSearchText] = useState("");
+
+  const numberOfPages = Math.ceil(totalCount / booksPerPage);
+  const pages = [...Array(numberOfPages).keys()];
+
+  // FETCH BOOKS
   useEffect(() => {
+    const fetchBooks = async () => {
+      try {
+        // setLoading(true);
+        const res = await axiosInstance.get(
+          `/books?page=${currentPage}&size=${booksPerPage}&sort=${sort}&search=${searchText}`
+        );
 
-    setIsDataLoading(true)
+        console.log(res);
 
-    axiosInstance.get("/books").then((data) => {
-      setBooks(data.data);
-      setIsDataLoading(false)
-    });
-  }, [axiosInstance]);
+        setBooks(res.data.books || []);
+setTotalCount(res.data.count || 0);
+      } catch (error) {
+        console.error("Failed to load books", error);
+      } finally {
+        // setLoading(false);
+      }
+    };
 
-  // Sort Logic (Functionality preserved)
-  useEffect(() => {
+    fetchBooks();
+  }, [currentPage, booksPerPage, sort, searchText]);
 
-    setIsDataLoading(true)
-
-    if (sort === "High") {
-      axiosInstance.get("/asort-rating").then((res) => {
-        setBooks(res.data);
-        setIsDataLoading(false)
-      });
-    } else if (sort === "Low") {
-      axiosInstance.get("/dsort-rating").then((res) => {
-        setBooks(res.data);
-        setIsDataLoading(false)
-      });
-    } else {
-      // Re-fetch default list if sorting is set to "Rating"
-      axiosInstance.get("/books").then((res) => {
-        setBooks(res.data);
-        setIsDataLoading(false)
-      });
-    }
-  }, [axiosInstance, sort]);
-
-  // Search Handler (Functionality preserved)
+  // SEARCH
   const handleSearch = (e) => {
     e.preventDefault();
-
-    setIsDataLoading(true)
-
-    const search_text = e.target.search.value;
-
-    axiosInstance.get(`/search?search=${search_text}`).then((res) => {
-      setBooks(res.data);
-      setIsDataLoading(false)
-    });
+    setCurrentPage(0);
+    setSearchText(e.target.search.value);
   };
 
-  if(isDataLoading){
-      return <Loading></Loading>
-    }
+  if (loading) return <Loading />;
 
   return (
-    <div className="max-w-7xl p-2 mx-auto my-10 min-h-screen">
-      <div className="space-y-10">
-        {/* Title */}
-        <h1 className="text-center text-3xl font-bold md:text-5xl text-base-content">
-          📚 All Books
-        </h1>
+    <div className="max-w-7xl p-4 mx-auto my-10 min-h-screen">
+      <h1 className="text-center text-4xl font-bold mb-10">📚 All Books</h1>
 
-        {/* Controls Section: Total, Search, Sort */}
-        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mt-10">
-          <div className="order-2 sm:order-1 w-full sm:w-auto text-center sm:text-left">
-            <h2 className="text-xl font-medium text-base-content/80">
-              Total Books: <span className="font-bold text-amber-600">{books.length}</span>
-            </h2>
+      {/* CONTROLS */}
+      <div className="flex flex-col md:flex-row gap-4 justify-between mb-8">
+        <h2 className="text-xl">
+          Total Books: <span className="font-bold text-amber-600">{totalCount}</span>
+        </h2>
+
+        {/* SEARCH */}
+        <form onSubmit={handleSearch} className="flex w-full md:w-96">
+          <div className="relative w-full">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2" size={18} />
+            <input
+              name="search"
+              type="search"
+              placeholder="Search by title..."
+              onChange={(e) => {
+                setSearchText(e.target.value);
+                setCurrentPage(0);
+              }}
+              className="input input-bordered w-full pl-10 rounded-r-none"
+            />
           </div>
+          <button className="btn bg-amber-600 text-white rounded-l-none">
+            Search
+          </button>
+        </form>
 
-          {/* Search Form (Using DaisyUI input and button styles) */}
-          <form onSubmit={handleSearch} className="order-1 sm:order-2 w-full max-w-lg">
-            <div className="relative flex w-full">
-              {/* 🔍 Search Icon */}
-              <Search
-                className="absolute left-3 z-50 top-1/2 -translate-y-1/2 text-base-content/60"
-                size={18}
-              />
+        {/* SORT */}
+        <select
+          value={sort}
+          onChange={(e) => {
+            setSort(e.target.value);
+            setCurrentPage(0);
+          }}
+          className="select select-bordered w-48"
+        >
+          <option value="">Default Rating</option>
+          <option value="rating_desc">Highest Rating</option>
+          <option value="rating_asc">Lowest Rating</option>
+        </select>
+      </div>
 
-              {/* 🔎 Input Field */}
-              <input
-                type="search"
-                name="search"
-                placeholder="Search book title..."
-                // DaisyUI classes for input
-                className="input input-bordered w-full rounded-r-none pl-10 pr-4 bg-base-100 text-base-content shadow-md focus:ring-1 focus:ring-primary focus:border-primary"
-              />
-
-              {/* 🔘 Search Button */}
-              <button
-                type="submit"
-                className="btn bg-amber-600 text-white rounded-l-none font-medium shadow-md hover:shadow-lg"
-              >
-                Search
-              </button>
-            </div>
-          </form>
-
-          {/* Sort Dropdown (Using DaisyUI select styles) */}
-          <div className="order-3 w-full sm:w-auto">
-            <select
-              onChange={(e) => setSort(e.target.value)}
-              aria-label="Sort by"
-              // DaisyUI classes for select
-              className="select select-bordered w-full sm:w-40 bg-base-100 text-base-content shadow-md focus:ring-1 focus:ring-primary focus:border-primary"
-              defaultValue="Rating"
-            >
-              <option disabled value="Rating">Sort by Rating</option>
-              <option value="High">Highest Rating</option>
-              <option value="Low">Lowest Rating</option>
-            </select>
-          </div>
-        </div>
-
-        <hr className="border-t border-base-300" />
-
-        {/* Book List / Table */}
-        <div>
-          {/* TABLE - shown on sm and above (Using DaisyUI table classes) */}
-          <div className="hidden sm:block overflow-x-auto rounded-xl shadow-lg bg-base-100 border border-base-300">
-            <table className="table w-full">
-              <thead>
-                <tr className="bg-base-200">
-                  <th className="text-left text-xs font-semibold uppercase tracking-wider text-base-content/80 min-w-[200px]">
-                    Book
-                  </th>
-                  <th className="text-left text-xs font-semibold uppercase tracking-wider text-base-content/80">
-                    Author
-                  </th>
-                  <th className="text-left text-xs font-semibold uppercase tracking-wider text-base-content/80">
-                    Genre
-                  </th>
-                  <th className="text-left text-xs font-semibold uppercase tracking-wider text-base-content/80">
-                    Rating
-                  </th>
-                  <th className="text-right text-xs font-semibold uppercase tracking-wider text-base-content/80">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {books.map((book) => (
-                  <tr
-                    key={book._id}
-                    className="hover:bg-base-200/50 transition-colors border-base-300"
-                  >
-                    <td className="py-4 flex items-center gap-4">
-                      <img
-                        src={book.bookImage}
-                        alt={`Cover of ${book.title}`}
-                        className="w-12 h-16 rounded-lg object-cover flex-shrink-0 shadow-md"
-                      />
-                      <div className="truncate text-base-content">
-                        <div className="font-medium truncate max-w-xs text-base">
-                          {book.title}
-                        </div>
-                        <div className="text-xs text-base-content/60 mt-1">
-                          ID: {book.id || book._id?.slice(-4)}
-                        </div>
-                      </div>
-                    </td>
-
-                    <td className="py-4 whitespace-nowrap text-base-content/90">
-                      <div className="text-sm font-light">
-                        {book.author}
-                      </div>
-                    </td>
-
-                    <td className="py-4 whitespace-nowrap">
-                      <span className="badge badge-outline badge-primary text-xs font-medium">
-                        {book.category}
-                      </span>
-                    </td>
-
-                    <td className="py-4 whitespace-nowrap">
-                      <Stars value={book.rating}/>
-                    </td>
-
-                    <td className="py-4 whitespace-nowrap text-right">
-                      <Link
-                        to={`/books-details/${book._id}`}
-                        className="btn btn-sm border border-amber-600 text-amber-600 font-medium shadow-md"
-                        aria-label={`View details for ${book.title}`}
-                      >
-                        View Details
-                        <ChevronRight size={16} />
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {/* MOBILE CARDS - shown on xs (Using DaisyUI card and button styles) */}
-          <div className="block sm:hidden space-y-4">
-            {books.map((book) => (
-              <article
-                key={book._id}
-                className="card card-compact bg-base-100 shadow-xl border border-base-300 hover:shadow-2xl transition-shadow"
-              >
-                <div className="card-body p-4 flex-row gap-4">
-                  {/* Book Image */}
-                  <div className="flex-shrink-0">
+      {/* TABLE */}
+      <div className="overflow-x-auto rounded-lg shadow bg-base-100">
+        <table className="table w-full">
+          <thead>
+            <tr>
+              <th>Book</th>
+              <th>Author</th>
+              <th>Genre</th>
+              <th>Rating</th>
+              <th className="text-right">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {books.length === 0 ? (
+              <tr>
+                <td colSpan="5" className="text-center py-10 text-gray-500">
+                  No books found 📭
+                </td>
+              </tr>
+            ) : (
+              books.map((book) => (
+                <tr key={book._id}>
+                  <td className="flex gap-3 items-center">
                     <img
                       src={book.bookImage}
-                      alt={`Cover of ${book.title}`}
-                      className="w-20 h-28 rounded-lg object-cover shadow-md"
+                      alt={book.title}
+                      className="w-12 h-16 object-cover rounded"
                     />
-                  </div>
+                    <span>{book.title}</span>
+                  </td>
+                  <td>{book.author}</td>
+                  <td>
+                    <span className="badge badge-outline badge-primary">
+                      {book.category}
+                    </span>
+                  </td>
+                  <td>
+                    <Stars value={book.rating} />
+                  </td>
+                  <td className="text-right">
+                    <Link
+                      to={`/books-details/${book._id}`}
+                      className="btn btn-sm border border-amber-600 text-amber-600"
+                    >
+                      View <ChevronRight size={16} />
+                    </Link>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
 
-                  {/* Book Info */}
-                  <div className="flex-1 min-w-0 flex flex-col justify-between">
-                    <div>
-                      <div className="font-bold text-lg leading-snug text-base-content line-clamp-2">
-                        {book.title}
-                      </div>
-                      <div className="text-sm text-base-content/70 mt-1 font-medium">
-                        {book.author}
-                      </div>
-                      <div className="mt-2">
-                        <span className="badge badge-outline badge-primary text-xs font-medium">
-                          {book.category}
-                        </span>
-                      </div>
-                    </div>
+      {/* PAGINATION */}
+      <div className="flex flex-col items-center mt-8 gap-4">
+        <div className="join">
+          <button
+            className="join-item btn btn-sm"
+            disabled={currentPage === 0}
+            onClick={() => setCurrentPage((p) => p - 1)}
+          >
+            <ChevronLeft size={16} />
+          </button>
 
-                    {/* Rating + Actions */}
-                    <div className="flex items-center justify-between mt-3 pt-2 border-t border-base-200">
-                      <div className="flex items-center gap-1">
-                        <Stars value={book.rating} />
-                      </div>
+          {pages.map((page) => (
+            <button
+              key={page}
+              onClick={() => setCurrentPage(page)}
+              className={`join-item btn btn-sm ${
+                currentPage === page ? "bg-amber-600 text-white" : ""
+              }`}
+            >
+              {page + 1}
+            </button>
+          ))}
 
-                      <Link
-                        to={`/books-details/${book._id}`}
-                        className="btn btn-xs btn-primary font-medium"
-                        aria-label={`View details for ${book.title}`}
-                      >
-                        View
-                        <ChevronRight size={14} />
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
+          <button
+            className="join-item btn btn-sm"
+            disabled={currentPage === numberOfPages - 1}
+            onClick={() => setCurrentPage((p) => p + 1)}
+          >
+            <ChevronRight size={16} />
+          </button>
         </div>
+
+        <select
+          value={booksPerPage}
+          onChange={(e) => {
+            setBooksPerPage(parseInt(e.target.value));
+            setCurrentPage(0);
+          }}
+          className="select select-sm select-bordered"
+        >
+          <option value="6">6 per page</option>
+          <option value="12">12 per page</option>
+          <option value="24">24 per page</option>
+        </select>
       </div>
     </div>
   );

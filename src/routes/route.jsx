@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router";
 import RootLayouts from "../layouts/RootLayouts";
 import Home from "../pages/Home";
 import AllBooks from "../pages/AllBooks";
+import About from "../pages/About";
 import AddBook from "../pages/AddBook";
 import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
@@ -9,7 +10,9 @@ import BookDetails from "../components/BookDetails";
 import PrivateRoute from "./PrivateRoute";
 import MyBooks from "../pages/MyBooks";
 import Error from "../pages/Error";
-import MyProfile from "../pages/MyProfile";
+import MyProfile from "../pages/dashboard/MyProfile";
+import DashboardLayout from "../layouts/DashboardLayout";
+import Dashboard from "../pages/dashboard/Dashboard";
 
 
 const router = createBrowserRouter([
@@ -26,16 +29,8 @@ const router = createBrowserRouter([
                 Component: AllBooks
             },
             {
-                path: 'add-book',
-                element: <PrivateRoute>
-                    <AddBook></AddBook>
-                </PrivateRoute>
-            },
-            {
-                path: "my-books",
-                element: <PrivateRoute>
-                    <MyBooks></MyBooks>
-                </PrivateRoute>
+                path: 'about',
+                Component: About
             },
             {
                 path: "login",
@@ -50,17 +45,36 @@ const router = createBrowserRouter([
                 Component: BookDetails
             },
             {
-                path: '/profile',
-                Component: MyProfile
-            },
-            
-            {
-        path: '*',
-        Component: Error
-    }
+                path: '*',
+                Component: Error
+            }
         ]
     },
-    
+    {
+        path: '/dashboard',
+        element: <PrivateRoute>
+            <DashboardLayout />
+        </PrivateRoute>,
+        children: [
+            {
+                index: true,
+                Component: Dashboard
+            },
+            {
+                path: 'profile',
+                Component: MyProfile
+            },
+            {
+                path: 'add-book',
+                Component: AddBook
+            },
+            {
+                path: "my-books",
+                Component: MyBooks
+            }
+        ]
+    }
+
 ])
 
 export default router

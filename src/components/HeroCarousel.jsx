@@ -90,7 +90,7 @@ const HeroCarousel = ({ slides = slidesDefault, interval = 3600 }) => {
   const goTo = (i) => setIndex(i % slidesCount);
 
   return (
-    <section className="w-11/12 max-w-7xl mx-auto py-12">
+    <section className="max-w-7xl mx-auto py-8">
       <div className="relative overflow-hidden min-h-[30rem] rounded-3xl bg-base-200 shadow-2xl">
         
         <div className="absolute inset-0 opacity-20 [mask-image:radial-gradient(ellipse_at_top,_#000,_transparent)]">
