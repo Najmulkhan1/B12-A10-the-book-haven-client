@@ -13,6 +13,7 @@ import Error from "../pages/Error";
 import MyProfile from "../pages/dashboard/MyProfile";
 import DashboardLayout from "../layouts/DashboardLayout";
 import Dashboard from "../pages/dashboard/Dashboard";
+import Contact from "../pages/Contarct";
 
 
 const router = createBrowserRouter([
@@ -43,6 +44,10 @@ const router = createBrowserRouter([
             {
                 path: '/books-details/:id',
                 Component: BookDetails
+            },
+            {
+                path: 'contact',
+                Component: Contact
             },
             {
                 path: '*',

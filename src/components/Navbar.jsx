@@ -24,7 +24,9 @@ const Navbar = () => {
   const publicLinks = [
     { to: "/", label: "Home" },
     { to: "/all-books", label: "All Books" },
+    { to: "/contact", label: "Contact" },
     { to: "/about", label: "About" },
+    
   ];
 
   // Protected links (Visible only to logged-in users)
@@ -32,8 +34,8 @@ const Navbar = () => {
   // We combine public + protected for users, or just use a specific set.
   // Let's combine: Home, All Books, Add Book, My Books, About (Optional)
   const protectedLinks = [
-    { to: "/add-book", label: "Add Book" },
-    { to: "/my-books", label: "My Books" },
+    { to: "/dashboard", label: "Dashboard" },
+    { to: "/dashboard/my-profile", label: "My Profile" },
   ];
 
   // Final list based on auth
